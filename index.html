@@ -279,7 +279,7 @@ const CAD={
 // Ao bipe repetido → BLOQUEADO, não vai para planilha.
 let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
 let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbxdkP2f_zqEixXwZTSPWWG8E2Sa72Vdlofa_8ci5tbLbjastC2JLSE9NUdOakQVoA7Akg/exec';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbw8ADEn4rucxQnP9TUWRtc3lrFEcOoRN2tszyLfLKOF4-K9gsx6EqWc82hgLk9oE96z/exec';
 let feedTimer, camAtiva=false, leitor=null;
 let bufScanner='', bufTimer=null;
 
@@ -468,9 +468,11 @@ function fecharCamera(){
 // ─── ENVIO PARA GOOGLE SHEETS ─────────────────────────────────────────────────
 async function enviar(item){
   if(!scriptUrl) return;
-  const p=new URLSearchParams({cmd:'bipe',codigo:item.cod,nome:item.nome,qtd:item.qtd,hora:item.hora});
+  const url = scriptUrl + '?cmd=bipe&codigo=' + encodeURIComponent(item.cod) + '&nome=' + encodeURIComponent(item.nome) + '&qtd=' + item.qtd + '&hora=' + encodeURIComponent(item.hora);
   try{
-    await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'});
+    // Usa imagem para contornar bloqueio CORS — funciona igual ao clicar no link
+    const img = new Image();
+    img.src = url;
     estoque[item.cod].sync='ok'; salvarE(); renderLista();
     setConn('ok','SINCRONIZADO');
   }catch(e){
