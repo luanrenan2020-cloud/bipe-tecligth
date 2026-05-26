@@ -279,7 +279,7 @@ const CAD={
 // Ao bipe repetido → BLOQUEADO, não vai para planilha.
 let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
 let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
-let scriptUrl = localStorage.getItem('btUrl')||'';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbxdkP2f_zqEixXwZTSPWWG8E2Sa72Vdlofa_8ci5tbLbjastC2JLSE9NUdOakQVoA7Akg/exec';
 let feedTimer, camAtiva=false, leitor=null;
 let bufScanner='', bufTimer=null;
 
@@ -287,10 +287,11 @@ function nomeCod(c){ return CAD[c]||'NÃO CADASTRADO'; }
 
 // ─── INICIALIZAÇÃO ────────────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
-  if(scriptUrl){ document.getElementById('scriptUrl').value=scriptUrl; setConn('ok','CONECTADO'); }
+  document.getElementById('scriptUrl').value=scriptUrl;
+  setConn('ok','CONECTADO');
   renderLista(); contadores(); atualizarFilaUI();
   focarInput();
-  if(scriptUrl&&fila.length) setTimeout(reenviarFila,1500);
+  if(fila.length) setTimeout(reenviarFila,1500);
 });
 
 // ─── FOCO NO INPUT OCULTO ─────────────────────────────────────────────────────
