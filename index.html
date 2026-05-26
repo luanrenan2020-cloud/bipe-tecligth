@@ -351,15 +351,14 @@ function registrar(raw){
   const hora = new Date().toLocaleString('pt-BR');
   const n    = nomeCod(raw);
 
-  // ► VERIFICAR DUPLICADO — se já existe no estoque, bloqueia e alerta
   if(estoque[raw]){
-    mostrarAlertaDup(raw, n);
-    return; // NÃO envia para planilha
+    estoque[raw].qtd++;
+    estoque[raw].hora = hora;
+  } else {
+    estoque[raw] = {cod:raw, nome:n, qtd:1, hora, sync:'nd'};
   }
 
-  // Novo código — registra normalmente
-  estoque[raw] = {cod:raw, nome:n, qtd:1, hora, sync:'nd'};
-  fb('ok', raw + ' — ' + n + (scriptUrl?' · enviando...':''));
+  fb('ok', raw + ' — ' + n + ' · QTD: ' + estoque[raw].qtd + (scriptUrl?' · enviando...':''));
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
 
   if(scriptUrl){ setConn('busy','ENVIANDO...'); enviar(estoque[raw]); }
