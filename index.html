@@ -269,7 +269,7 @@ const CAD={
 // Ao bipe repetido → BLOQUEADO, não vai para planilha.
 let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
 let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbw8ADEn4rucxQnP9TUWRtc3lrFEcOoRN2tszyLfLKOF4-K9gsx6EqWc82hgLk9oE96z/exec';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbxJmAQ442VoXXlaKwPs5Jdu95pxPhc3DIDbwJ7QYFGB_49SPYmpD9KUuA4FccKDZgrZ/exec';
 let feedTimer, camAtiva=false, leitor=null;
 let bufScanner='', bufTimer=null;
 
@@ -378,6 +378,25 @@ function mostrarUlt(cod){
   document.getElementById('ultQtd').textContent =it.qtd;
 }
 
+// ─── FEEDBACK DE LEITURA NA CÂMERA ───────────────────────────────────────────
+function feedbackLeitura(){
+  // Vibração
+  if(navigator.vibrate) navigator.vibrate(200);
+  // Flash verde na tela
+  const overlay = document.getElementById('camOverlay');
+  overlay.style.border = '6px solid #00e676';
+  const status = document.getElementById('camStatus');
+  status.textContent = '✓ LIDO!';
+  status.style.color = '#00e676';
+  status.style.fontWeight = 'bold';
+  setTimeout(()=>{
+    overlay.style.border = '';
+    status.textContent = 'Aponte para o código...';
+    status.style.color = '';
+    status.style.fontWeight = '';
+  }, 1800);
+}
+
 // ─── CÂMERA ───────────────────────────────────────────────────────────────────
 let streamCam = null, rafCam = null;
 
@@ -408,7 +427,11 @@ async function abrirCamera(){
         const results = await detector.detect(video);
         if(results && results.length > 0){
           const code = results[0].rawValue.trim().replace(/\D/g,'');
-          if(code){ registrar(code); await new Promise(r=>setTimeout(r,1500)); }
+          if(code){
+            feedbackLeitura();
+            registrar(code);
+            await new Promise(r=>setTimeout(r,2000));
+          }
         }
       }catch(e){}
       rafCam = requestAnimationFrame(scanNativo);
@@ -429,7 +452,12 @@ async function abrirCamera(){
         const qr  = jsQR(img.data, img.width, img.height);
         if(qr && qr.data){
           const code = qr.data.trim().replace(/\D/g,'');
-          if(code){ registrar(code); await new Promise(r=>setTimeout(r,1500)); return; }
+          if(code){
+            feedbackLeitura();
+            registrar(code);
+            await new Promise(r=>setTimeout(r,2000));
+            return;
+          }
         }
       }
       rafCam = requestAnimationFrame(scanJsQR);
@@ -457,9 +485,9 @@ function fecharCamera(){
 // ─── ENVIO PARA GOOGLE SHEETS ─────────────────────────────────────────────────
 async function enviar(item){
   if(!scriptUrl) return;
-  const url = scriptUrl + '?cmd=bipe&codigo=' + encodeURIComponent(item.cod) + '&nome=' + encodeURIComponent(item.nome) + '&qtd=' + item.qtd + '&hora=' + encodeURIComponent(item.hora);
+  // Sempre envia qtd=1 — o Apps Script soma na mesma linha
+  const url = scriptUrl + '?cmd=bipe&codigo=' + encodeURIComponent(item.cod) + '&nome=' + encodeURIComponent(item.nome) + '&qtd=1&hora=' + encodeURIComponent(item.hora);
   try{
-    // Usa imagem para contornar bloqueio CORS — funciona igual ao clicar no link
     const img = new Image();
     img.src = url;
     estoque[item.cod].sync='ok'; salvarE(); renderLista();
