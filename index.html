@@ -196,17 +196,7 @@
 
 </div>
 
-<!-- ALERTA DUPLICADO -->
-<div id="alertaDup">
-  <div class="dup-box">
-    <div class="dup-icon">⚠️</div>
-    <div class="dup-title">CÓDIGO REPETIDO!</div>
-    <div class="dup-cod" id="dupCod"></div>
-    <div class="dup-nome" id="dupNome"></div>
-    <div class="dup-msg">Este código já foi bipado anteriormente.<br>O registro <strong>não foi enviado</strong> para a planilha.</div>
-    <button class="dup-btn" onclick="fecharAlertaDup()">✓ &nbsp;ENTENDIDO</button>
-  </div>
-</div>
+<!-- ALERTA DUPLICADO REMOVIDO -->
 
 <!-- CAMERA OVERLAY -->
 <div id="camOverlay">
@@ -418,7 +408,7 @@ async function abrirCamera(){
         const results = await detector.detect(video);
         if(results && results.length > 0){
           const code = results[0].rawValue.trim().replace(/\D/g,'');
-          if(code){ fecharCamera(); registrar(code); return; }
+          if(code){ registrar(code); await new Promise(r=>setTimeout(r,1500)); }
         }
       }catch(e){}
       rafCam = requestAnimationFrame(scanNativo);
@@ -429,7 +419,7 @@ async function abrirCamera(){
   } else if(typeof jsQR !== 'undefined'){
     const canvas = document.createElement('canvas');
     const ctx    = canvas.getContext('2d');
-    function scanJsQR(){
+    async function scanJsQR(){
       if(!camAtiva) return;
       if(video.readyState === video.HAVE_ENOUGH_DATA){
         canvas.width  = video.videoWidth;
@@ -439,7 +429,7 @@ async function abrirCamera(){
         const qr  = jsQR(img.data, img.width, img.height);
         if(qr && qr.data){
           const code = qr.data.trim().replace(/\D/g,'');
-          if(code){ fecharCamera(); registrar(code); return; }
+          if(code){ registrar(code); await new Promise(r=>setTimeout(r,1500)); return; }
         }
       }
       rafCam = requestAnimationFrame(scanJsQR);
