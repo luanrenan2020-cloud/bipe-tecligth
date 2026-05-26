@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BIPE TECLIGTH</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap');
+  :root{--bg:#060a0f;--card:#0d1520;--border:#1a2840;--accent:#00c8ff;--green:#00e676;--red:#ff3d57;--orange:#ff8c00;--yellow:#ffd600;--text:#dce8f5;--muted:#3d5470;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow:hidden;}
+  #app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
+
+  /* HEADER */
+  header{background:linear-gradient(180deg,#071422,#0d1a2b);border-bottom:1px solid var(--border);padding:12px 16px 10px;flex-shrink:0;}
+  .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .brand{font-size:1.2rem;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;}
+  .brand span{color:var(--orange);}
+  .badge-v{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);background:rgba(0,200,255,.07);border:1px solid var(--border);border-radius:4px;padding:2px 7px;}
+  .url-row{display:flex;gap:6px;}
+  .url-row input{flex:1;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:7px 9px;outline:none;}
+  .url-row input:focus{border-color:var(--accent);color:var(--text);}
+  .url-row button{padding:7px 12px;background:var(--accent);border:none;border-radius:6px;color:#000;font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;}
+  .conn-row{display:flex;align-items:center;gap:7px;margin-top:6px;}
+  #connDot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s,box-shadow .3s;}
+  #connTxt{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:1px;}
+  #filaBadge{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--yellow);margin-left:auto;display:none;}
+
+  /* BODY */
+  .body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;}
+
+  /* CARD */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;}
+  .card-label{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
+
+  /* SCAN — input oculto mas ativo */
+  #codeInput{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+
+  /* BOTAO CAMERA */
+  .btn-cam{width:100%;padding:13px;border:1px dashed var(--border);border-radius:8px;background:transparent;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:.95rem;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
+  .btn-cam:active{border-color:var(--accent);color:var(--accent);}
+
+  /* FEEDBACK */
+  #feedback{padding:11px 13px;border-radius:8px;font-size:.82rem;display:none;align-items:center;gap:10px;font-family:'Share Tech Mono',monospace;margin-top:10px;}
+  #feedback.ok  {display:flex;background:rgba(0,230,118,.1); border:1px solid var(--green); color:var(--green);}
+  #feedback.err {display:flex;background:rgba(255,61,87,.1);  border:1px solid var(--red);   color:var(--red);}
+  #feedback.busy{display:flex;background:rgba(255,214,0,.08); border:1px solid var(--yellow);color:var(--yellow);}
+  #feedback.warn{display:flex;background:rgba(255,140,0,.08); border:1px solid var(--orange);color:var(--orange);}
+
+  /* ALERTA DUPLICADO */
+  #alertaDup{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.82);align-items:center;justify-content:center;padding:24px;}
+  #alertaDup.show{display:flex;}
+  .dup-box{background:#1a0a0f;border:2px solid var(--red);border-radius:14px;padding:28px 22px;max-width:340px;width:100%;text-align:center;}
+  .dup-icon{font-size:2.4rem;margin-bottom:10px;animation:pulseR 0.5s ease;}
+  @keyframes pulseR{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .dup-title{font-size:1.1rem;font-weight:700;letter-spacing:2px;color:var(--red);margin-bottom:6px;}
+  .dup-cod{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:3px;margin-bottom:4px;}
+  .dup-nome{font-size:.8rem;color:var(--text);opacity:.75;margin-bottom:14px;}
+  .dup-msg{font-size:.78rem;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+  .dup-btn{width:100%;padding:14px;border:none;border-radius:8px;background:var(--red);color:#fff;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;cursor:pointer;}
+  .dup-btn:active{opacity:.85;}
+
+  /* STATUS SCAN ao vivo */
+  .scan-status{display:flex;align-items:center;justify-content:center;gap:10px;padding:18px;border:1px dashed rgba(0,200,255,.2);border-radius:8px;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:1px;}
+  .scan-pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:blink 1.2s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+
+  /* ULTIMO BIPADO */
+  #cardUlt{display:none;}
+  .ult-row{display:flex;align-items:center;justify-content:space-between;}
+  .ult-cod{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:2px;}
+  .ult-nome{font-size:.8rem;color:var(--text);margin-top:3px;}
+  .ult-hora{font-size:.62rem;color:var(--muted);margin-top:2px;}
+  .ult-qtd-val{font-family:'Share Tech Mono',monospace;font-size:2.2rem;color:var(--yellow);font-weight:700;line-height:1;text-align:center;}
+  .ult-qtd-lbl{font-size:.55rem;letter-spacing:2px;color:var(--muted);text-align:center;}
+
+  /* CONTADORES */
+  .counters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .cnt-box{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:11px 8px;text-align:center;}
+  .cnt-val{font-family:'Share Tech Mono',monospace;font-size:1.6rem;font-weight:700;line-height:1;margin-bottom:3px;}
+  .cnt-lbl{font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .c-b{color:var(--accent);}.c-u{color:var(--green);}.c-t{color:var(--yellow);}
+
+  /* LISTA */
+  .hist-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;}
+  .hist-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:7px;animation:su .18s ease;}
+  @keyframes su{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+  .hi-left{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .hi-cod{font-family:'Share Tech Mono',monospace;font-size:.82rem;color:var(--accent);letter-spacing:1.5px;}
+  .hi-nome{font-size:.72rem;color:var(--text);opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+  .hi-hora{font-size:.6rem;color:var(--muted);}
+  .hi-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .hi-qtd{font-family:'Share Tech Mono',monospace;font-size:.9rem;color:var(--yellow);font-weight:700;}
+  .hi-sync{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .sync-ok{background:var(--green);}.sync-err{background:var(--red);}.sync-nd{background:var(--muted);}
+  .btn-del{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,61,87,.4);background:transparent;color:var(--red);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .btn-del:active{background:rgba(255,61,87,.2);}
+  .empty-msg{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;letter-spacing:1px;}
+
+  /* FOOTER */
+  footer{flex-shrink:0;padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;}
+  .btn-f{flex:1;padding:13px;border-radius:8px;background:transparent;font-family:'Rajdhani',sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;transition:background .15s;}
+  .btn-retry{border:1px solid rgba(255,214,0,.3);color:var(--yellow);}
+  .btn-retry:active{background:rgba(255,214,0,.08);}
+  .btn-clear{border:1px solid rgba(255,61,87,.3);color:var(--red);}
+  .btn-clear:active{background:rgba(255,61,87,.1);}
+
+  /* CAMERA OVERLAY */
+  #camOverlay{display:none;position:fixed;inset:0;background:#000;z-index:999;flex-direction:column;}
+  #camOverlay.show{display:flex;}
+  #camVideo{width:100%;flex:1;object-fit:cover;}
+  .cam-guide{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:260px;height:160px;border:2px solid var(--accent);border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.55);}
+  .cam-line{position:absolute;left:0;right:0;height:2px;background:var(--accent);top:50%;animation:scanV 1.5s ease-in-out infinite;}
+  @keyframes scanV{0%,100%{top:8%;opacity:.7}50%{top:88%;opacity:1}}
+  #camStatus{text-align:center;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.72rem;padding:8px;background:#000;letter-spacing:1px;}
+  .cam-footer{padding:16px;background:#000;display:flex;gap:10px;}
+  .btn-cam-close{flex:1;padding:14px;border:1px solid var(--red);border-radius:8px;background:transparent;color:var(--red);font-family:'Rajdhani',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div class="hdr-top">
+      <div class="brand">BIPE <span>TECLIGTH</span></div>
+      <span class="badge-v">v5.0</span>
+    </div>
+    <div class="url-row">
+      <input id="scriptUrl" type="url" placeholder="Cole a URL do Apps Script aqui..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <button onclick="salvarUrl()">OK</button>
+    </div>
+    <div class="conn-row">
+      <div id="connDot"></div>
+      <span id="connTxt">SEM URL</span>
+      <span id="filaBadge">⟳ <span id="filaNum">0</span> na fila</span>
+    </div>
+  </header>
+
+  <div class="body">
+
+    <!-- Campo de bipe oculto — recebe o scanner como teclado -->
+    <input id="codeInput" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false">
+
+    <div class="card">
+      <div class="card-label">▸ Leitura — BIPE TECLIGTH</div>
+      <div class="scan-status">
+        <div class="scan-pulse"></div>
+        AGUARDANDO BIPE...
+      </div>
+      <button class="btn-cam" onclick="abrirCamera()" style="margin-top:10px;">
+        📷 &nbsp;LER COM CÂMERA
+      </button>
+      <div id="feedback"></div>
+    </div>
+
+    <div class="card" id="cardUlt">
+      <div class="card-label">▸ Último bipado</div>
+      <div class="ult-row">
+        <div>
+          <div class="ult-cod" id="ultCod"></div>
+          <div class="ult-nome" id="ultNome"></div>
+          <div class="ult-hora" id="ultHora"></div>
+        </div>
+        <div>
+          <div class="ult-qtd-val" id="ultQtd">1</div>
+          <div class="ult-qtd-lbl">QTD</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">▸ Sessão atual</div>
+      <div class="counters">
+        <div class="cnt-box"><div class="cnt-val c-b" id="cB">0</div><div class="cnt-lbl">Bipagens</div></div>
+        <div class="cnt-box"><div class="cnt-val c-u" id="cU">0</div><div class="cnt-lbl">Únicos</div></div>
+        <div class="cnt-box"><div class="cnt-val c-t" id="cT">0</div><div class="cnt-lbl">Total Qtd</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label" style="display:flex;justify-content:space-between;">
+        <span>▸ Itens bipados</span>
+        <span id="histCount" style="color:var(--muted);font-size:.62rem;"></span>
+      </div>
+      <div class="hist-list" id="histList">
+        <div class="empty-msg">Nenhuma leitura ainda.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <button class="btn-f btn-retry" onclick="reenviarFila()">↺ REENVIAR</button>
+    <button class="btn-f btn-clear" onclick="limparEstoque()">✕ LIMPAR</button>
+  </footer>
+
+</div>
+
+<!-- ALERTA DUPLICADO -->
+<div id="alertaDup">
+  <div class="dup-box">
+    <div class="dup-icon">⚠️</div>
+    <div class="dup-title">CÓDIGO REPETIDO!</div>
+    <div class="dup-cod" id="dupCod"></div>
+    <div class="dup-nome" id="dupNome"></div>
+    <div class="dup-msg">Este código já foi bipado anteriormente.<br>O registro <strong>não foi enviado</strong> para a planilha.</div>
+    <button class="dup-btn" onclick="fecharAlertaDup()">✓ &nbsp;ENTENDIDO</button>
+  </div>
+</div>
+
+<!-- CAMERA OVERLAY -->
+<div id="camOverlay">
+  <div id="camStatus">Iniciando câmera...</div>
+  <div style="position:relative;flex:1;overflow:hidden;">
+    <video id="camVideo" autoplay playsinline muted></video>
+    <div class="cam-guide"><div class="cam-line"></div></div>
+  </div>
+  <div class="cam-footer">
+    <button class="btn-cam-close" onclick="fecharCamera()">✕ FECHAR</button>
+  </div>
+</div>
+
+<script>
+// ─── CÂMERA: usa BarcodeDetector nativo (Android Chrome) ou fallback canvas+jsQR ───
+// Carrega jsQR como fallback apenas se BarcodeDetector não existir
+if(typeof BarcodeDetector === 'undefined'){
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
+  document.head.appendChild(s);
+}
+</script>
+<script>
+// ─── CADASTRO ────────────────────────────────────────────────────────────────
+const CAD={
+  "521625000":"CHICOTE ANTERIOR","521625050":"CHICOTE ANTERIOR",
+  "522138770":"CHICOTE ANTERIOR","522195750":"CHICOTE ANTERIOR",
+  "522223250":"CHICOTE ANTERIOR","522242480":"CHICOTE ANTERIOR",
+  "522252800":"CHICOTE ANTERIOR","522345100":"CHICOTE ANTERIOR",
+  "522349430":"CHICOTE ANTERIOR","522349440":"CHICOTE ANTERIOR",
+  "522349450":"CHICOTE ANTERIOR","522349460":"CHICOTE ANTERIOR",
+  "522469100":"CHICOTE ANTERIOR","522469110":"CHICOTE ANTERIOR",
+  "522469120":"CHICOTE ANTERIOR","522469130":"CHICOTE ANTERIOR",
+  "522469140":"CHICOTE ANTERIOR","522469210":"CHICOTE ANTERIOR",
+  "522397640":"CHICOTE ANTERIOR","522394830":"CHICOTE ANTERIOR",
+  "522394820":"CHICOTE ANTERIOR","522682260":"CHICOTE ANTERIOR",
+  "522683690":"CHICOTE ANTERIOR","522683700":"CHICOTE ANTERIOR",
+  "522682240":"CHICOTE PORTA","522683720":"CHICOTE PORTA",
+  "522394990":"CHICOTE PORTA","522648010":"PAINEL DE INSTRUMENTOS",
+  "522397820":"PAINEL DE INSTRUMENTOS","522469190":"PAINEL DE INSTRUMENTOS",
+  "522683710":"PAINEL DE INSTRUMENTOS","522641630":"PAINEL DE INSTRUMENTOS",
+  "522641660":"PAINEL DE INSTRUMENTOS","522641620":"PAINEL DE INSTRUMENTOS",
+  "522638760":"PAINEL DE INSTRUMENTOS","522638740":"PAINEL DE INSTRUMENTOS",
+  "522682250":"CHICOTE ANTERIOR","521750510":"CHICOTE ANTERIOR",
+  "522194520":"CHICOTE ANTERIOR","522194530":"CHICOTE ANTERIOR",
+  "521625540":"CHICOTE ANTERIOR","521625550":"CHICOTE ANTERIOR",
+  "521625560":"CHICOTE ANTERIOR","521625590":"CHICOTE ANTERIOR",
+  "521625600":"CHICOTE ANTERIOR","521625610":"CHICOTE ANTERIOR",
+  "521625650":"CHICOTE ANTERIOR","521757070":"CHICOTE ANTERIOR",
+  "522500910":"CHICOTE ANTERIOR","522500900":"CHICOTE ANTERIOR",
+  "522367320":"CHICOTE ANTERIOR","522367330":"CHICOTE ANTERIOR",
+  "522367340":"CHICOTE ANTERIOR","522367350":"CHICOTE ANTERIOR",
+  "522367360":"CHICOTE ANTERIOR","522367370":"CHICOTE ANTERIOR",
+  "522367380":"CHICOTE ANTERIOR","522367400":"CHICOTE ANTERIOR",
+  "522367410":"CHICOTE ANTERIOR","522367420":"CHICOTE ANTERIOR",
+  "522367430":"CHICOTE ANTERIOR","522367440":"CHICOTE ANTERIOR",
+  "522367450":"CHICOTE ANTERIOR","522367460":"CHICOTE ANTERIOR",
+  "522367470":"CHICOTE ANTERIOR","522367710":"CHICOTE ANTERIOR",
+  "522367720":"CHICOTE ANTERIOR","522367730":"CHICOTE ANTERIOR",
+  "522367740":"CHICOTE ANTERIOR","522367750":"CHICOTE ANTERIOR",
+  "522367760":"CHICOTE ANTERIOR","522367770":"CHICOTE ANTERIOR",
+  "522367780":"CHICOTE ANTERIOR","522555720":"CHICOTE ANTERIOR",
+  "522567680":"CHICOTE ANTERIOR","522641680":"CHICOTE ANTERIOR",
+  "522641690":"CHICOTE ANTERIOR","522641670":"CHICOTE ANTERIOR",
+  "522638770":"CHICOTE ANTERIOR","522638780":"CHICOTE ANTERIOR"
+};
+
+// ─── ESTADO ───────────────────────────────────────────────────────────────────
+// IMPORTANTE: estoque guarda apenas UMA entrada por código (sem QTD acumulada).
+// Ao bipe repetido → BLOQUEADO, não vai para planilha.
+let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
+let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbxdkP2f_zqEixXwZTSPWWG8E2Sa72Vdlofa_8ci5tbLbjastC2JLSE9NUdOakQVoA7Akg/exec';
+let feedTimer, camAtiva=false, leitor=null;
+let bufScanner='', bufTimer=null;
+
+function nomeCod(c){ return CAD[c]||'NÃO CADASTRADO'; }
+
+// ─── INICIALIZAÇÃO ────────────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  document.getElementById('scriptUrl').value=scriptUrl;
+  setConn('ok','CONECTADO');
+  renderLista(); contadores(); atualizarFilaUI();
+  focarInput();
+  if(fila.length) setTimeout(reenviarFila,1500);
+});
+
+// ─── FOCO NO INPUT OCULTO ─────────────────────────────────────────────────────
+// O input fica oculto mas sempre com foco para receber o scanner (teclado HID)
+function focarInput(){
+  const inp = document.getElementById('codeInput');
+  inp.focus();
+}
+
+// Refocar sempre que o usuário tocar na tela (fora da câmera/alerta)
+document.addEventListener('click', e=>{
+  if(camAtiva) return;
+  if(document.getElementById('alertaDup').classList.contains('show')) return;
+  focarInput();
+});
+
+// Listener do scanner: acumula caracteres e processa ao Enter ou timeout (scanner envia \n no final)
+document.getElementById('codeInput').addEventListener('keydown', e=>{
+  if(camAtiva) return;
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    const raw = document.getElementById('codeInput').value.trim().replace(/\D/g,'');
+    document.getElementById('codeInput').value = '';
+    if(raw) registrar(raw);
+  }
+});
+
+// Garantir que qualquer digitação do scanner vá para o input
+document.addEventListener('keydown', e=>{
+  if(camAtiva) return;
+  if(document.getElementById('alertaDup').classList.contains('show')) return;
+  const inp = document.getElementById('codeInput');
+  if(document.activeElement !== inp) inp.focus();
+});
+
+// ─── URL ──────────────────────────────────────────────────────────────────────
+function salvarUrl(){
+  const v=document.getElementById('scriptUrl').value.trim();
+  if(!v){setConn('err','URL inválida');return;}
+  scriptUrl=v; localStorage.setItem('btUrl',v);
+  setConn('ok','CONECTADO');
+  fb('ok','URL salva! Bipes serão enviados automaticamente.');
+  if(fila.length) reenviarFila();
+}
+
+function setConn(s,t){
+  const c={ok:'#00e676',err:'#ff3d57',busy:'#ffd600',off:'#3d5470'};
+  const d=document.getElementById('connDot');
+  d.style.background=c[s]||c.off;
+  d.style.boxShadow=s!=='off'?'0 0 8px '+(c[s]||'#fff'):'none';
+  const tx=document.getElementById('connTxt');
+  tx.textContent=t; tx.style.color=c[s]||c.off;
+}
+
+// ─── REGISTRO ─────────────────────────────────────────────────────────────────
+function registrar(raw){
+  const hora = new Date().toLocaleString('pt-BR');
+  const n    = nomeCod(raw);
+
+  // ► VERIFICAR DUPLICADO — se já existe no estoque, bloqueia e alerta
+  if(estoque[raw]){
+    mostrarAlertaDup(raw, n);
+    return; // NÃO envia para planilha
+  }
+
+  // Novo código — registra normalmente
+  estoque[raw] = {cod:raw, nome:n, qtd:1, hora, sync:'nd'};
+  fb('ok', raw + ' — ' + n + (scriptUrl?' · enviando...':''));
+  salvarE(); renderLista(); contadores(); mostrarUlt(raw);
+
+  if(scriptUrl){ setConn('busy','ENVIANDO...'); enviar(estoque[raw]); }
+}
+
+// ─── ALERTA DUPLICADO ─────────────────────────────────────────────────────────
+function mostrarAlertaDup(cod, nome){
+  document.getElementById('dupCod').textContent  = cod;
+  document.getElementById('dupNome').textContent = nome;
+  document.getElementById('alertaDup').classList.add('show');
+  // Vibrar dispositivo se suportado
+  if(navigator.vibrate) navigator.vibrate([200,100,200]);
+}
+
+function fecharAlertaDup(){
+  document.getElementById('alertaDup').classList.remove('show');
+  focarInput();
+}
+
+// ─── ÚLTIMO BIPADO ────────────────────────────────────────────────────────────
+function mostrarUlt(cod){
+  const it=estoque[cod]; if(!it) return;
+  document.getElementById('cardUlt').style.display='block';
+  document.getElementById('ultCod').textContent =it.cod;
+  document.getElementById('ultNome').textContent=it.nome;
+  document.getElementById('ultHora').textContent=it.hora;
+  document.getElementById('ultQtd').textContent =it.qtd;
+}
+
+// ─── CÂMERA ───────────────────────────────────────────────────────────────────
+let streamCam = null, rafCam = null;
+
+async function abrirCamera(){
+  const overlay = document.getElementById('camOverlay');
+  overlay.classList.add('show');
+  camAtiva = true;
+  document.getElementById('camStatus').textContent = 'Aponte para o código...';
+  const video = document.getElementById('camVideo');
+
+  try {
+    streamCam = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width:{ideal:1280}, height:{ideal:720} }
+    });
+    video.srcObject = streamCam;
+    await video.play();
+  } catch(e) {
+    document.getElementById('camStatus').textContent = 'Erro ao acessar câmera: ' + e.message;
+    return;
+  }
+
+  // Tenta usar BarcodeDetector nativo (Android Chrome 83+)
+  if(typeof BarcodeDetector !== 'undefined'){
+    const detector = new BarcodeDetector({formats:['qr_code','code_128','ean_13','ean_8','code_39','itf','data_matrix','upc_a','upc_e']});
+    async function scanNativo(){
+      if(!camAtiva) return;
+      try{
+        const results = await detector.detect(video);
+        if(results && results.length > 0){
+          const code = results[0].rawValue.trim().replace(/\D/g,'');
+          if(code){ fecharCamera(); registrar(code); return; }
+        }
+      }catch(e){}
+      rafCam = requestAnimationFrame(scanNativo);
+    }
+    rafCam = requestAnimationFrame(scanNativo);
+
+  // Fallback: jsQR via canvas
+  } else if(typeof jsQR !== 'undefined'){
+    const canvas = document.createElement('canvas');
+    const ctx    = canvas.getContext('2d');
+    function scanJsQR(){
+      if(!camAtiva) return;
+      if(video.readyState === video.HAVE_ENOUGH_DATA){
+        canvas.width  = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const qr  = jsQR(img.data, img.width, img.height);
+        if(qr && qr.data){
+          const code = qr.data.trim().replace(/\D/g,'');
+          if(code){ fecharCamera(); registrar(code); return; }
+        }
+      }
+      rafCam = requestAnimationFrame(scanJsQR);
+    }
+    rafCam = requestAnimationFrame(scanJsQR);
+
+  } else {
+    document.getElementById('camStatus').textContent = 'Aguarde — carregando leitor...';
+    setTimeout(()=>{ fecharCamera(); abrirCamera(); }, 1500);
+  }
+}
+
+function fecharCamera(){
+  if(!camAtiva) return;
+  if(rafCam){ cancelAnimationFrame(rafCam); rafCam=null; }
+  if(streamCam){ streamCam.getTracks().forEach(t=>t.stop()); streamCam=null; }
+  document.getElementById('camOverlay').classList.remove('show');
+  document.getElementById('camStatus').textContent = 'Iniciando câmera...';
+  const video = document.getElementById('camVideo');
+  video.srcObject = null;
+  camAtiva = false; leitor = null;
+  focarInput();
+}
+
+// ─── ENVIO PARA GOOGLE SHEETS ─────────────────────────────────────────────────
+async function enviar(item){
+  if(!scriptUrl) return;
+  const p=new URLSearchParams({cmd:'bipe',codigo:item.cod,nome:item.nome,qtd:item.qtd,hora:item.hora});
+  try{
+    await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'});
+    estoque[item.cod].sync='ok'; salvarE(); renderLista();
+    setConn('ok','SINCRONIZADO');
+  }catch(e){
+    estoque[item.cod].sync='err';
+    fila.push({...item}); localStorage.setItem('btF',JSON.stringify(fila));
+    salvarE(); renderLista(); atualizarFilaUI();
+    setConn('err','SEM CONEXÃO — na fila');
+  }
+}
+
+async function reenviarFila(){
+  if(!scriptUrl||!fila.length){fb('warn','Nenhuma falha pendente.');return;}
+  setConn('busy','REENVIANDO...');
+  const pend=[...fila]; fila=[]; localStorage.setItem('btF','[]'); atualizarFilaUI();
+  for(const it of pend){
+    const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:it.qtd,hora:it.hora});
+    try{ await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'}); await new Promise(r=>setTimeout(r,250)); }
+    catch(e){ fila.push(it); }
+  }
+  localStorage.setItem('btF',JSON.stringify(fila)); atualizarFilaUI();
+  setConn(fila.length===0?'ok':'err',fila.length===0?'FILA ENVIADA':fila.length+' FALHAS');
+}
+
+function atualizarFilaUI(){
+  document.getElementById('filaNum').textContent=fila.length;
+  document.getElementById('filaBadge').style.display=fila.length>0?'inline':'none';
+}
+
+// ─── LISTA ────────────────────────────────────────────────────────────────────
+function renderLista(){
+  const list=document.getElementById('histList');
+  const cnt =document.getElementById('histCount');
+  const its =Object.values(estoque);
+  cnt.textContent=its.length+' item'+(its.length!==1?'ns':'');
+  if(!its.length){list.innerHTML='<div class="empty-msg">Nenhuma leitura ainda.</div>';return;}
+  list.innerHTML=its.map(h=>`
+    <div class="hist-item">
+      <div class="hi-left">
+        <div class="hi-cod">${h.cod}</div>
+        <div class="hi-nome">${h.nome}</div>
+        <div class="hi-hora">${h.hora}</div>
+      </div>
+      <div class="hi-right">
+        <div class="hi-qtd">${h.qtd}x</div>
+        <div class="hi-sync ${h.sync==='ok'?'sync-ok':h.sync==='err'?'sync-err':'sync-nd'}"></div>
+        <button class="btn-del" onclick="del('${h.cod}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function del(cod){
+  delete estoque[cod]; salvarE(); renderLista(); contadores();
+  if(document.getElementById('ultCod').textContent===cod)
+    document.getElementById('cardUlt').style.display='none';
+}
+
+function contadores(){
+  const its=Object.values(estoque);
+  document.getElementById('cB').textContent=its.reduce((a,h)=>a+h.qtd,0);
+  document.getElementById('cU').textContent=its.length;
+  document.getElementById('cT').textContent=its.reduce((a,h)=>a+h.qtd,0);
+}
+
+function limparEstoque(){
+  if(!Object.keys(estoque).length){fb('warn','Já está vazio.');return;}
+  if(!confirm('Limpar todos os itens bipados?')) return;
+  estoque={}; salvarE(); renderLista(); contadores();
+  document.getElementById('cardUlt').style.display='none';
+  fb('ok','Estoque limpo!');
+}
+
+function salvarE(){try{localStorage.setItem('btE',JSON.stringify(estoque));}catch(e){}}
+
+function fb(type,msg){
+  const el=document.getElementById('feedback');
+  el.className=type; el.textContent=msg;
+  clearTimeout(feedTimer);
+  feedTimer=setTimeout(()=>{el.className='';el.textContent='';},4000);
+}
+</script>
+</body>
+</html>
