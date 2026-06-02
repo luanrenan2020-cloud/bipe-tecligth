@@ -116,6 +116,44 @@
   .cam-footer{padding:16px;background:#000;display:flex;gap:10px;}
   .btn-cam-close{flex:1;padding:14px;border:1px solid var(--red);border-radius:8px;background:transparent;color:var(--red);font-family:'Rajdhani',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;}
 </style>
+
+<script>
+// ─── SONS VIA WEB AUDIO API ───────────────────────────────────────────────────
+function somBipe(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(1200, ctx.currentTime);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.15);
+  }catch(e){}
+}
+
+function somErro(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    // Dois bipes graves descendentes
+    [0, 0.2].forEach(function(t){
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(400, ctx.currentTime + t);
+      o.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + t + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.15);
+      o.start(ctx.currentTime + t);
+      o.stop(ctx.currentTime + t + 0.15);
+    });
+  }catch(e){}
+}
+</script>
+
 </head>
 <body>
 <div id="app">
@@ -191,12 +229,35 @@
 
   <footer>
     <button class="btn-f btn-retry" onclick="reenviarFila()">↺ REENVIAR</button>
+    <button class="btn-f" style="flex:1;padding:13px;border-radius:8px;background:transparent;border:1px solid rgba(0,200,255,.3);color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;" onclick="abrirExportar()">📋 EXPORTAR</button>
     <button class="btn-f btn-clear" onclick="limparEstoque()">✕ LIMPAR</button>
   </footer>
 
 </div>
 
-<!-- ALERTA DUPLICADO REMOVIDO -->
+<!-- POPUP NÃO CADASTRADO -->
+<div id="popupNaoCad" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#1a0a0f;border:2px solid #ff3d57;border-radius:14px;padding:28px 22px;max-width:340px;width:100%;text-align:center;">
+    <div style="font-size:2.4rem;margin-bottom:10px;">🚫</div>
+    <div style="font-size:1.1rem;font-weight:700;letter-spacing:2px;color:#ff3d57;margin-bottom:8px;">CÓDIGO NÃO CADASTRADO</div>
+    <div id="popupNaoCadCod" style="font-family:monospace;font-size:1rem;color:#00c8ff;letter-spacing:3px;margin-bottom:14px;"></div>
+    <div style="font-size:.78rem;color:#3d5470;margin-bottom:18px;">Este código não está no cadastro.<br>O bipe <strong>não foi enviado</strong> para a planilha.</div>
+    <button onclick="fecharPopupNaoCad()" style="width:100%;padding:14px;border:none;border-radius:8px;background:#ff3d57;color:#fff;font-family:Rajdhani,sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;cursor:pointer;">✓ ENTENDIDO</button>
+  </div>
+</div>
+
+<!-- POPUP EXPORTAR MANUAL -->
+<div id="popupExportar" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#0d1520;border:2px solid #00c8ff;border-radius:14px;padding:24px 20px;max-width:360px;width:100%;">
+    <div style="font-size:1rem;font-weight:700;letter-spacing:2px;color:#00c8ff;margin-bottom:14px;text-align:center;">📋 EXPORTAR MANUAL</div>
+    <div style="font-size:.75rem;color:#3d5470;margin-bottom:12px;">Copie os dados abaixo e cole na planilha:</div>
+    <textarea id="exportTexto" style="width:100%;height:200px;background:#060a0f;border:1px solid #1a2840;border-radius:6px;color:#dce8f5;font-family:monospace;font-size:.7rem;padding:8px;resize:none;"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button onclick="copiarExport()" style="flex:1;padding:12px;border:1px solid #00c8ff;border-radius:8px;background:transparent;color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;">📋 COPIAR</button>
+      <button onclick="fecharExportar()" style="flex:1;padding:12px;border:1px solid #ff3d57;border-radius:8px;background:transparent;color:#ff3d57;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;">✕ FECHAR</button>
+    </div>
+  </div>
+</div>
 
 <!-- CAMERA OVERLAY -->
 <div id="camOverlay">
@@ -341,6 +402,27 @@ function registrar(raw){
   const hora = new Date().toLocaleString('pt-BR');
   const n    = nomeCod(raw);
 
+  // ► BLOQUEAR NÃO CADASTRADO
+  if(n === 'NÃO CADASTRADO'){
+    somErro();
+    if(navigator.vibrate) navigator.vibrate([300,100,300,100,300]);
+    mostrarPopupNaoCad(raw);
+    fb('err', '⚠️ NÃO CADASTRADO: ' + raw);
+    if(camAtiva){
+      const overlay = document.getElementById('camOverlay');
+      const status  = document.getElementById('camStatus');
+      overlay.style.border = '6px solid #ff3d57';
+      status.textContent   = '✕ NÃO CADASTRADO!';
+      status.style.color   = '#ff3d57';
+      setTimeout(()=>{
+        overlay.style.border = '';
+        status.textContent   = 'Aponte para o código...';
+        status.style.color   = '';
+      }, 2000);
+    }
+    return;
+  }
+
   if(estoque[raw]){
     estoque[raw].qtd++;
     estoque[raw].hora = hora;
@@ -348,6 +430,7 @@ function registrar(raw){
     estoque[raw] = {cod:raw, nome:n, qtd:1, hora, sync:'nd'};
   }
 
+  somBipe();
   fb('ok', raw + ' — ' + n + ' · QTD: ' + estoque[raw].qtd + (scriptUrl?' · enviando...':''));
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
 
@@ -556,9 +639,51 @@ function contadores(){
 function limparEstoque(){
   if(!Object.keys(estoque).length){fb('warn','Já está vazio.');return;}
   if(!confirm('Limpar todos os itens bipados?')) return;
-  estoque={}; salvarE(); renderLista(); contadores();
+  estoque={}; fila=[]; 
+  localStorage.removeItem('btE'); localStorage.removeItem('btF');
+  renderLista(); contadores(); atualizarFilaUI();
   document.getElementById('cardUlt').style.display='none';
-  fb('ok','Estoque limpo!');
+  fb('ok','Limpado com sucesso!');
+}
+
+// ─── POPUP NÃO CADASTRADO ─────────────────────────────────────────────────────
+function mostrarPopupNaoCad(cod){
+  document.getElementById('popupNaoCadCod').textContent = cod;
+  const el = document.getElementById('popupNaoCad');
+  el.style.display = 'flex';
+}
+function fecharPopupNaoCad(){
+  document.getElementById('popupNaoCad').style.display = 'none';
+  focarInput();
+}
+
+// ─── EXPORTAR MANUAL ──────────────────────────────────────────────────────────
+function abrirExportar(){
+  const its = Object.values(estoque);
+  if(!its.length){ fb('warn','Nenhum item para exportar.'); return; }
+  
+  let texto = 'CÓDIGO	CHICOTE	QTD	ÚLT. LEITURA
+';
+  its.forEach(h => {
+    texto += h.cod + '	' + h.nome + '	' + h.qtd + '	' + h.hora + '
+';
+  });
+  
+  document.getElementById('exportTexto').value = texto;
+  document.getElementById('popupExportar').style.display = 'flex';
+}
+
+function fecharExportar(){
+  document.getElementById('popupExportar').style.display = 'none';
+  focarInput();
+}
+
+function copiarExport(){
+  const ta = document.getElementById('exportTexto');
+  ta.select();
+  document.execCommand('copy');
+  fb('ok','Copiado! Cole na planilha com Ctrl+V.');
+  fecharExportar();
 }
 
 function salvarE(){try{localStorage.setItem('btE',JSON.stringify(estoque));}catch(e){}}
