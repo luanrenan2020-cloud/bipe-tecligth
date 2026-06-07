@@ -174,7 +174,7 @@ function somErro(){
   <div class="body">
 
     <!-- Campo de bipe oculto — recebe o scanner como teclado -->
-    <input id="codeInput" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false">
+    <input id="codeInput" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;">
 
     <div class="card">
       <div class="card-label">▸ Leitura — BIPE TECLIGTH</div>
@@ -182,7 +182,7 @@ function somErro(){
         <div class="scan-pulse"></div>
         AGUARDANDO BIPE...
       </div>
-      <button class="btn-cam" id="btnCam" style="margin-top:10px;">
+      <button class="btn-cam" id="btnCam" style="margin-top:10px;position:relative;z-index:10;">
          &nbsp;LER COM CÂMERA
       </button>
       <div id="feedback"></div>
