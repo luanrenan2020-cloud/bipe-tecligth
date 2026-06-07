@@ -11,61 +11,36 @@
   html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow:hidden;}
   #app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;}
 
-  /* HEADER */
   header{background:linear-gradient(180deg,#071422,#0d1a2b);border-bottom:1px solid var(--border);padding:12px 16px 10px;flex-shrink:0;}
   .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
   .brand{font-size:1.2rem;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;}
   .brand span{color:var(--orange);}
   .badge-v{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);background:rgba(0,200,255,.07);border:1px solid var(--border);border-radius:4px;padding:2px 7px;}
-  .url-row{display:flex;gap:6px;}
-  .url-row input{flex:1;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:7px 9px;outline:none;}
-  .url-row input:focus{border-color:var(--accent);color:var(--text);}
-  .url-row button{padding:7px 12px;background:var(--accent);border:none;border-radius:6px;color:#000;font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;}
   .conn-row{display:flex;align-items:center;gap:7px;margin-top:6px;}
   #connDot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s,box-shadow .3s;}
   #connTxt{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:1px;}
   #filaBadge{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--yellow);margin-left:auto;display:none;}
 
-  /* BODY */
   .body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;}
-
-  /* CARD */
   .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;}
   .card-label{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
 
-  /* SCAN — input oculto mas ativo */
-  #codeInput{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+  #codeInput{position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;}
 
-  /* BOTAO CAMERA */
-  .btn-cam{width:100%;padding:13px;border:1px dashed var(--border);border-radius:8px;background:transparent;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:.95rem;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
-  .btn-cam:active{border-color:var(--accent);color:var(--accent);}
+  /* BOTÃO CÂMERA — grande e tocável */
+  .btn-cam{width:100%;padding:16px;border:1px dashed var(--accent);border-radius:8px;background:rgba(0,200,255,.05);color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin-top:10px;min-height:54px;touch-action:manipulation;user-select:none;}
+  .btn-cam:active,.btn-cam:focus{background:rgba(0,200,255,.15);outline:none;}
 
-  /* FEEDBACK */
   #feedback{padding:11px 13px;border-radius:8px;font-size:.82rem;display:none;align-items:center;gap:10px;font-family:'Share Tech Mono',monospace;margin-top:10px;}
   #feedback.ok  {display:flex;background:rgba(0,230,118,.1); border:1px solid var(--green); color:var(--green);}
   #feedback.err {display:flex;background:rgba(255,61,87,.1);  border:1px solid var(--red);   color:var(--red);}
   #feedback.busy{display:flex;background:rgba(255,214,0,.08); border:1px solid var(--yellow);color:var(--yellow);}
   #feedback.warn{display:flex;background:rgba(255,140,0,.08); border:1px solid var(--orange);color:var(--orange);}
 
-  /* ALERTA DUPLICADO */
-  #alertaDup{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.82);align-items:center;justify-content:center;padding:24px;}
-  #alertaDup.show{display:flex;}
-  .dup-box{background:#1a0a0f;border:2px solid var(--red);border-radius:14px;padding:28px 22px;max-width:340px;width:100%;text-align:center;}
-  .dup-icon{font-size:2.4rem;margin-bottom:10px;animation:pulseR 0.5s ease;}
-  @keyframes pulseR{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
-  .dup-title{font-size:1.1rem;font-weight:700;letter-spacing:2px;color:var(--red);margin-bottom:6px;}
-  .dup-cod{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:3px;margin-bottom:4px;}
-  .dup-nome{font-size:.8rem;color:var(--text);opacity:.75;margin-bottom:14px;}
-  .dup-msg{font-size:.78rem;color:var(--muted);margin-bottom:18px;line-height:1.5;}
-  .dup-btn{width:100%;padding:14px;border:none;border-radius:8px;background:var(--red);color:#fff;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;cursor:pointer;}
-  .dup-btn:active{opacity:.85;}
-
-  /* STATUS SCAN ao vivo */
   .scan-status{display:flex;align-items:center;justify-content:center;gap:10px;padding:18px;border:1px dashed rgba(0,200,255,.2);border-radius:8px;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:1px;}
   .scan-pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:blink 1.2s ease-in-out infinite;}
   @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
 
-  /* ULTIMO BIPADO */
   #cardUlt{display:none;}
   .ult-row{display:flex;align-items:center;justify-content:space-between;}
   .ult-cod{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:2px;}
@@ -74,14 +49,12 @@
   .ult-qtd-val{font-family:'Share Tech Mono',monospace;font-size:2.2rem;color:var(--yellow);font-weight:700;line-height:1;text-align:center;}
   .ult-qtd-lbl{font-size:.55rem;letter-spacing:2px;color:var(--muted);text-align:center;}
 
-  /* CONTADORES */
   .counters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .cnt-box{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:11px 8px;text-align:center;}
   .cnt-val{font-family:'Share Tech Mono',monospace;font-size:1.6rem;font-weight:700;line-height:1;margin-bottom:3px;}
   .cnt-lbl{font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .c-b{color:var(--accent);}.c-u{color:var(--green);}.c-t{color:var(--yellow);}
 
-  /* LISTA */
   .hist-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;}
   .hist-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:7px;animation:su .18s ease;}
   @keyframes su{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -97,63 +70,58 @@
   .btn-del:active{background:rgba(255,61,87,.2);}
   .empty-msg{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;letter-spacing:1px;}
 
-  /* FOOTER */
   footer{flex-shrink:0;padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;position:sticky;bottom:0;background:var(--bg);z-index:100;}
-  .btn-f{flex:1;padding:13px;border-radius:8px;background:transparent;font-family:'Rajdhani',sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;transition:background .15s;}
+  .btn-f{flex:1;padding:13px;border-radius:8px;background:transparent;font-family:'Rajdhani',sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;transition:background .15s;touch-action:manipulation;}
   .btn-retry{border:1px solid rgba(255,214,0,.3);color:var(--yellow);}
   .btn-retry:active{background:rgba(255,214,0,.08);}
   .btn-clear{border:1px solid rgba(255,61,87,.3);color:var(--red);}
   .btn-clear:active{background:rgba(255,61,87,.1);}
 
-  /* CAMERA OVERLAY */
-  #camOverlay{display:none;position:fixed;inset:0;background:#000;z-index:999;flex-direction:column;}
+  /* ===== CAMERA OVERLAY ===== */
+  #camOverlay{display:none;position:fixed;inset:0;background:#000;z-index:9999;flex-direction:column;}
   #camOverlay.show{display:flex;}
-  #camVideo{width:100%;flex:1;object-fit:cover;}
-  .cam-guide{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:260px;height:160px;border:2px solid var(--accent);border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.55);}
+  #camVideo{width:100%;flex:1;object-fit:cover;display:block;}
+  .cam-guide-wrap{position:absolute;top:0;left:0;right:0;bottom:80px;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+  .cam-guide{width:260px;height:160px;border:2px solid var(--accent);border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.55);position:relative;}
   .cam-line{position:absolute;left:0;right:0;height:2px;background:var(--accent);top:50%;animation:scanV 1.5s ease-in-out infinite;}
   @keyframes scanV{0%,100%{top:8%;opacity:.7}50%{top:88%;opacity:1}}
-  #camStatus{text-align:center;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.72rem;padding:8px;background:#000;letter-spacing:1px;}
-  .cam-footer{padding:16px;background:#000;display:flex;gap:10px;}
-  .btn-cam-close{flex:1;padding:14px;border:1px solid var(--red);border-radius:8px;background:transparent;color:var(--red);font-family:'Rajdhani',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;}
+  #camStatus{text-align:center;color:#aaa;font-family:'Share Tech Mono',monospace;font-size:.72rem;padding:10px 8px;background:#000;letter-spacing:1px;min-height:38px;}
+  .cam-footer{padding:14px 12px;background:#000;display:flex;gap:10px;flex-shrink:0;}
+  .btn-cam-close{flex:1;padding:16px;border:1px solid var(--red);border-radius:8px;background:transparent;color:var(--red);font-family:'Rajdhani',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;touch-action:manipulation;}
+  .btn-cam-close:active{background:rgba(255,61,87,.15);}
+
+  /* indicador método ativo */
+  #metodoAtivo{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);text-align:center;padding:4px;background:#000;}
 </style>
 
 <script>
-// --- SONS VIA WEB AUDIO API ---------------------------------------------------
 function somBipe(){
   try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.type = 'sine';
-    o.frequency.setValueAtTime(1200, ctx.currentTime);
-    g.gain.setValueAtTime(0.3, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-    o.start(ctx.currentTime);
-    o.stop(ctx.currentTime + 0.15);
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.type='sine';o.frequency.setValueAtTime(1200,ctx.currentTime);
+    g.gain.setValueAtTime(0.3,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.15);
+    o.start(ctx.currentTime);o.stop(ctx.currentTime+0.15);
   }catch(e){}
 }
-
 function somErro(){
   try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    // Dois bipes graves descendentes
-    [0, 0.2].forEach(function(t){
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.type = 'sawtooth';
-      o.frequency.setValueAtTime(400, ctx.currentTime + t);
-      o.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + t + 0.15);
-      g.gain.setValueAtTime(0.3, ctx.currentTime + t);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.15);
-      o.start(ctx.currentTime + t);
-      o.stop(ctx.currentTime + t + 0.15);
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [0,0.22].forEach(t=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.type='sawtooth';
+      o.frequency.setValueAtTime(400,ctx.currentTime+t);
+      o.frequency.exponentialRampToValueAtTime(180,ctx.currentTime+t+0.18);
+      g.gain.setValueAtTime(0.3,ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.18);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.18);
     });
   }catch(e){}
 }
 </script>
-
 </head>
 <body>
 <div id="app">
@@ -161,9 +129,8 @@ function somErro(){
   <header>
     <div class="hdr-top">
       <div class="brand">BIPE <span>TECLIGTH</span></div>
-      <span class="badge-v">v5.0</span>
+      <span class="badge-v">v5.1</span>
     </div>
-    
     <div class="conn-row">
       <div id="connDot" style="background:#00e676;box-shadow:0 0 8px #00e676;"></div>
       <span id="connTxt" style="color:#00e676;">CONECTADO</span>
@@ -173,8 +140,7 @@ function somErro(){
 
   <div class="body">
 
-    <!-- Campo de bipe oculto — recebe o scanner como teclado -->
-    <input id="codeInput" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;">
+    <input id="codeInput" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false">
 
     <div class="card">
       <div class="card-label">▸ Leitura — BIPE TECLIGTH</div>
@@ -182,8 +148,9 @@ function somErro(){
         <div class="scan-pulse"></div>
         AGUARDANDO BIPE...
       </div>
-      <button class="btn-cam" id="btnCam" style="margin-top:10px;position:relative;z-index:10;">
-         &nbsp;LER COM CÂMERA
+      <!-- BOTÃO CÂMERA: onclick direto + touch handlers -->
+      <button class="btn-cam" id="btnCam" onclick="abrirCamera()">
+        📷 &nbsp;LER COM CÂMERA
       </button>
       <div id="feedback"></div>
     </div>
@@ -226,16 +193,16 @@ function somErro(){
 
   <footer>
     <button class="btn-f btn-retry" onclick="reenviarFila()">R REENVIAR</button>
-    <button class="btn-f" style="flex:1;padding:13px;border-radius:8px;background:transparent;border:1px solid rgba(0,200,255,.3);color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;" onclick="abrirExportar()"> EXPORTAR</button>
+    <button class="btn-f" style="flex:1;padding:13px;border-radius:8px;background:transparent;border:1px solid rgba(0,200,255,.3);color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;" onclick="abrirExportar()">EXPORTAR</button>
     <button class="btn-f btn-clear" onclick="limparEstoque()">X LIMPAR</button>
   </footer>
 
 </div>
 
 <!-- POPUP NÃO CADASTRADO -->
-<div id="popupNaoCad" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
+<div id="popupNaoCad" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
   <div style="background:#1a0a0f;border:2px solid #ff3d57;border-radius:14px;padding:28px 22px;max-width:340px;width:100%;text-align:center;">
-    <div style="font-size:2.4rem;margin-bottom:10px;">!</div>
+    <div style="font-size:2.4rem;margin-bottom:10px;">⚠️</div>
     <div style="font-size:1.1rem;font-weight:700;letter-spacing:2px;color:#ff3d57;margin-bottom:8px;">CÓDIGO NÃO CADASTRADO</div>
     <div id="popupNaoCadCod" style="font-family:monospace;font-size:1rem;color:#00c8ff;letter-spacing:3px;margin-bottom:14px;"></div>
     <div style="font-size:.78rem;color:#3d5470;margin-bottom:18px;">Este código não está no cadastro.<br>O bipe <strong>não foi enviado</strong> para a planilha.</div>
@@ -243,42 +210,38 @@ function somErro(){
   </div>
 </div>
 
-<!-- POPUP EXPORTAR MANUAL -->
-<div id="popupExportar" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
+<!-- POPUP EXPORTAR -->
+<div id="popupExportar" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
   <div style="background:#0d1520;border:2px solid #00c8ff;border-radius:14px;padding:24px 20px;max-width:360px;width:100%;">
-    <div style="font-size:1rem;font-weight:700;letter-spacing:2px;color:#00c8ff;margin-bottom:14px;text-align:center;"> EXPORTAR MANUAL</div>
+    <div style="font-size:1rem;font-weight:700;letter-spacing:2px;color:#00c8ff;margin-bottom:14px;text-align:center;">EXPORTAR MANUAL</div>
     <div style="font-size:.75rem;color:#3d5470;margin-bottom:12px;">Copie os dados abaixo e cole na planilha:</div>
     <textarea id="exportTexto" style="width:100%;height:200px;background:#060a0f;border:1px solid #1a2840;border-radius:6px;color:#dce8f5;font-family:monospace;font-size:.7rem;padding:8px;resize:none;"></textarea>
     <div style="display:flex;gap:8px;margin-top:12px;">
-      <button onclick="copiarExport()" style="flex:1;padding:12px;border:1px solid #00c8ff;border-radius:8px;background:transparent;color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;"> COPIAR</button>
+      <button onclick="copiarExport()" style="flex:1;padding:12px;border:1px solid #00c8ff;border-radius:8px;background:transparent;color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;">COPIAR</button>
       <button onclick="fecharExportar()" style="flex:1;padding:12px;border:1px solid #ff3d57;border-radius:8px;background:transparent;color:#ff3d57;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;">X FECHAR</button>
     </div>
   </div>
 </div>
 
-<!-- CAMERA OVERLAY -->
+<!-- ===== CAMERA OVERLAY ===== -->
 <div id="camOverlay">
   <div id="camStatus">Iniciando câmera...</div>
+  <div id="metodoAtivo"></div>
   <div style="position:relative;flex:1;overflow:hidden;">
-    <video id="camVideo" autoplay playsinline muted></video>
-    <div class="cam-guide"><div class="cam-line"></div></div>
+    <video id="camVideo" autoplay playsinline muted webkit-playsinline></video>
+    <div class="cam-guide-wrap">
+      <div class="cam-guide"><div class="cam-line"></div></div>
+    </div>
   </div>
   <div class="cam-footer">
-    <button class="btn-cam-close" onclick="fecharCamera()">X FECHAR</button>
+    <button class="btn-cam-close" id="btnFecharCam">✕ FECHAR CÂMERA</button>
   </div>
 </div>
 
 <script>
-// --- CÂMERA: usa BarcodeDetector nativo (Android Chrome) ou fallback canvas+jsQR ---
-// Carrega jsQR como fallback apenas se BarcodeDetector não existir
-if(typeof BarcodeDetector === 'undefined'){
-  var s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
-  document.head.appendChild(s);
-}
-</script>
-<script>
-// --- CADASTRO ----------------------------------------------------------------
+// ============================================================
+// CADASTRO
+// ============================================================
 const CAD={
   "521625000":"CHICOTE ANTERIOR","521625050":"CHICOTE ANTERIOR",
   "522138770":"CHICOTE ANTERIOR","522195750":"CHICOTE ANTERIOR",
@@ -322,272 +285,347 @@ const CAD={
   "522638770":"CHICOTE ANTERIOR","522638780":"CHICOTE ANTERIOR"
 };
 
-// --- ESTADO -------------------------------------------------------------------
-// IMPORTANTE: estoque guarda apenas UMA entrada por código (sem QTD acumulada).
-// Ao bipe repetido → BLOQUEADO, não vai para planilha.
+// ============================================================
+// ESTADO
+// ============================================================
 let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
 let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbw-27-2YF8xD6PVJ2783y9fcBh1yQnmyRb9EdhFFnn345AKARMJB22rRlrPgFoVH7rr/exec';
-let feedTimer, camAtiva=false, leitor=null;
-let bufScanner='', bufTimer=null;
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbw-27-2YF8xD6PVJ2783y9fcBh1yQnmyRb9EdhFFnn345AKARMJB22rRlrPgFoVH7rr/exec';
+let feedTimer, camAtiva=false;
+let streamCam=null, rafCam=null;
+let ultimoCodLido='', ultimoLidoTs=0; // debounce leitura câmera
 
 function nomeCod(c){ return CAD[c]||'NÃO CADASTRADO'; }
 
-// --- INICIALIZAÇÃO ------------------------------------------------------------
+// ============================================================
+// INIT
+// ============================================================
 window.addEventListener('load',()=>{
   setConn('ok','CONECTADO');
-  renderLista();
-  contadores();
-  atualizarFilaUI();
-  focarInput();
-
+  renderLista(); contadores(); atualizarFilaUI(); focarInput();
   if(fila.length) setTimeout(reenviarFila,1500);
 
-  // Botão câmera — funciona no Android
-  const btnCam = document.getElementById('btnCam');
-  btnCam.addEventListener('touchstart', function(e){
-    e.stopPropagation();
-  }, {passive: true});
-  btnCam.addEventListener('touchend', function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    abrirCamera();
-  });
-  btnCam.addEventListener('click', function(e){
-    e.stopPropagation();
-    abrirCamera();
+  // Fechar câmera pelo botão
+  document.getElementById('btnFecharCam').addEventListener('click', fecharCamera);
+  document.getElementById('btnFecharCam').addEventListener('touchend', function(e){
+    e.preventDefault(); fecharCamera();
   });
 });
 
-// --- FOCO NO INPUT OCULTO -----------------------------------------------------
-// O input fica oculto mas sempre com foco para receber o scanner (teclado HID)
+// ============================================================
+// INPUT SCANNER (teclado HID)
+// ============================================================
 function focarInput(){
-  const inp = document.getElementById('codeInput');
-  inp.focus();
+  try{ document.getElementById('codeInput').focus(); }catch(e){}
 }
 
-// Refocar sempre que o usuário tocar na tela (fora da câmera/alerta)
 document.addEventListener('click', e=>{
   if(camAtiva) return;
-  if(document.getElementById('alertaDup').classList.contains('show')) return;
   focarInput();
-});
+},{passive:true});
 
-// Listener do scanner: acumula caracteres e processa ao Enter ou timeout (scanner envia \n no final)
 document.getElementById('codeInput').addEventListener('keydown', e=>{
   if(camAtiva) return;
-  if(e.key === 'Enter'){
+  if(e.key==='Enter'){
     e.preventDefault();
-    const raw = document.getElementById('codeInput').value.trim().replace(/\D/g,'');
-    document.getElementById('codeInput').value = '';
+    const raw=document.getElementById('codeInput').value.trim().replace(/\D/g,'');
+    document.getElementById('codeInput').value='';
     if(raw) registrar(raw);
   }
 });
 
-// Garantir que qualquer digitação do scanner vá para o input
 document.addEventListener('keydown', e=>{
   if(camAtiva) return;
-  if(document.getElementById('alertaDup').classList.contains('show')) return;
-  const inp = document.getElementById('codeInput');
-  if(document.activeElement !== inp) inp.focus();
-});
+  const inp=document.getElementById('codeInput');
+  if(document.activeElement!==inp) inp.focus();
+},{passive:true});
 
-// --- URL ----------------------------------------------------------------------
-function salvarUrl(){
-  setConn('ok','CONECTADO');
-  fb('ok','Conectado automaticamente.');
-}
-
-function setConn(s,t){
-  const c={ok:'#00e676',err:'#ff3d57',busy:'#ffd600',off:'#3d5470'};
-  const d=document.getElementById('connDot');
-  d.style.background=c[s]||c.off;
-  d.style.boxShadow=s!=='off'?'0 0 8px '+(c[s]||'#fff'):'none';
-  const tx=document.getElementById('connTxt');
-  tx.textContent=t; tx.style.color=c[s]||c.off;
-}
-
-// --- REGISTRO -----------------------------------------------------------------
+// ============================================================
+// REGISTRO
+// ============================================================
 function registrar(raw){
-  const hora = new Date().toLocaleString('pt-BR');
-  const n    = nomeCod(raw);
+  const hora=new Date().toLocaleString('pt-BR');
+  const n=nomeCod(raw);
 
-  // > BLOQUEAR NÃO CADASTRADO
-  if(n === 'NÃO CADASTRADO'){
+  if(n==='NÃO CADASTRADO'){
     somErro();
     if(navigator.vibrate) navigator.vibrate([300,100,300,100,300]);
     mostrarPopupNaoCad(raw);
-    fb('err', '! NÃO CADASTRADO: ' + raw);
-    if(camAtiva){
-      const overlay = document.getElementById('camOverlay');
-      const status  = document.getElementById('camStatus');
-      overlay.style.border = '6px solid #ff3d57';
-      status.textContent   = 'X NÃO CADASTRADO!';
-      status.style.color   = '#ff3d57';
-      setTimeout(()=>{
-        overlay.style.border = '';
-        status.textContent   = 'Aponte para o código...';
-        status.style.color   = '';
-      }, 2000);
-    }
+    fb('err','! NÃO CADASTRADO: '+raw);
+    if(camAtiva) sinalizarCam('err','✕ NÃO CADASTRADO');
     return;
   }
 
   if(estoque[raw]){
     estoque[raw].qtd++;
-    estoque[raw].hora = hora;
-  } else {
-    estoque[raw] = {cod:raw, nome:n, qtd:1, hora, sync:'nd'};
+    estoque[raw].hora=hora;
+  }else{
+    estoque[raw]={cod:raw,nome:n,qtd:1,hora,sync:'nd'};
   }
 
   somBipe();
-  fb('ok', raw + ' — ' + n + ' · QTD: ' + estoque[raw].qtd + (scriptUrl?' · enviando...':''));
+  fb('ok',raw+' — '+n+' · QTD: '+estoque[raw].qtd+' · enviando...');
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
-
-  if(scriptUrl){ setConn('busy','ENVIANDO...'); enviar(estoque[raw]); }
+  if(camAtiva) sinalizarCam('ok','✓ LIDO!');
+  setConn('busy','ENVIANDO...'); enviar(estoque[raw]);
 }
 
-// --- ALERTA DUPLICADO ---------------------------------------------------------
-function mostrarAlertaDup(cod, nome){
-  document.getElementById('dupCod').textContent  = cod;
-  document.getElementById('dupNome').textContent = nome;
-  document.getElementById('alertaDup').classList.add('show');
-  // Vibrar dispositivo se suportado
-  if(navigator.vibrate) navigator.vibrate([200,100,200]);
-}
-
-function fecharAlertaDup(){
-  document.getElementById('alertaDup').classList.remove('show');
-  focarInput();
-}
-
-// --- ÚLTIMO BIPADO ------------------------------------------------------------
-function mostrarUlt(cod){
-  const it=estoque[cod]; if(!it) return;
-  document.getElementById('cardUlt').style.display='block';
-  document.getElementById('ultCod').textContent =it.cod;
-  document.getElementById('ultNome').textContent=it.nome;
-  document.getElementById('ultHora').textContent=it.hora;
-  document.getElementById('ultQtd').textContent =it.qtd;
-}
-
-// --- FEEDBACK DE LEITURA NA CÂMERA -------------------------------------------
-function feedbackLeitura(){
-  // Vibração
-  if(navigator.vibrate) navigator.vibrate(200);
-  // Flash verde na tela
-  const overlay = document.getElementById('camOverlay');
-  overlay.style.border = '6px solid #00e676';
-  const status = document.getElementById('camStatus');
-  status.textContent = 'OK LIDO!';
-  status.style.color = '#00e676';
-  status.style.fontWeight = 'bold';
-  setTimeout(()=>{
-    overlay.style.border = '';
-    status.textContent = 'Aponte para o código...';
-    status.style.color = '';
-    status.style.fontWeight = '';
-  }, 1800);
-}
-
-// --- CÂMERA -------------------------------------------------------------------
-let streamCam = null, rafCam = null;
-
+// ============================================================
+// CÂMERA — 3 MÉTODOS EM CASCATA
+// ============================================================
 async function abrirCamera(){
-  // Tira foco de qualquer elemento antes de pedir câmera
+  if(camAtiva) return;
+
+  // Blur em tudo antes de pedir permissão
   document.activeElement && document.activeElement.blur();
-  document.getElementById('codeInput').blur();
 
   const overlay = document.getElementById('camOverlay');
+  const status  = document.getElementById('camStatus');
+  const metodo  = document.getElementById('metodoAtivo');
+  const video   = document.getElementById('camVideo');
+
   overlay.classList.add('show');
   camAtiva = true;
-  document.getElementById('camStatus').textContent = 'Abrindo câmera...';
-  const video = document.getElementById('camVideo');
+  status.textContent = 'Solicitando permissão...';
+  status.style.color = '#aaa';
+  metodo.textContent = '';
 
-  try {
-    streamCam = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' } }
-    });
-    video.srcObject = streamCam;
-    await video.play();
-    document.getElementById('camStatus').textContent = 'Aponte para o código...';
-  } catch(e) {
-    document.getElementById('camStatus').textContent = 'Erro: ' + e.message;
-    return;
+  // --- Pede stream da câmera traseira ---
+  const constraints = [
+    // Tentativa 1: câmera traseira ideal
+    { video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } },
+    // Tentativa 2: qualquer câmera
+    { video: true },
+    // Tentativa 3: câmera traseira exact (alguns androids)
+    { video: { facingMode: 'environment' } }
+  ];
+
+  let stream = null;
+  for(let i=0; i<constraints.length; i++){
+    try{
+      stream = await navigator.mediaDevices.getUserMedia(constraints[i]);
+      break;
+    }catch(err){
+      if(i===constraints.length-1){
+        // Todas falharam
+        status.textContent = '✕ Permissão negada ou câmera indisponível';
+        status.style.color = '#ff3d57';
+        metodo.textContent = 'Verifique as permissões do navegador';
+        setTimeout(fecharCamera, 3000);
+        return;
+      }
+    }
   }
 
-  // Tenta usar BarcodeDetector nativo (Android Chrome 83+)
+  streamCam = stream;
+  video.srcObject = stream;
+
+  // Garante que o vídeo toca
+  try{
+    await video.play();
+  }catch(e){
+    // Alguns browsers precisam de interação do usuário — tenta mesmo assim
+  }
+
+  // Aguarda vídeo estar pronto
+  await new Promise(resolve=>{
+    if(video.readyState >= 2){ resolve(); return; }
+    video.addEventListener('canplay', resolve, { once: true });
+    setTimeout(resolve, 2000); // timeout de segurança
+  });
+
+  status.textContent = 'Aponte para o código...';
+  status.style.color = '#aaa';
+
+  // ---- MÉTODO 1: BarcodeDetector nativo (Android Chrome 83+) ----
   if(typeof BarcodeDetector !== 'undefined'){
-    const detector = new BarcodeDetector({formats:['qr_code','code_128','ean_13','ean_8','code_39','itf','data_matrix','upc_a','upc_e']});
-    async function scanNativo(){
+    metodo.textContent = 'Motor: BarcodeDetector nativo';
+    let bd;
+    try{
+      bd = new BarcodeDetector({
+        formats:['qr_code','code_128','ean_13','ean_8','code_39','itf','data_matrix','upc_a','upc_e','aztec','pdf417']
+      });
+    }catch(e){
+      bd = new BarcodeDetector();
+    }
+
+    const scanLoop = async ()=>{
       if(!camAtiva) return;
       try{
-        const results = await detector.detect(video);
+        const results = await bd.detect(video);
         if(results && results.length > 0){
           const code = results[0].rawValue.trim().replace(/\D/g,'');
-          if(code){
-            feedbackLeitura();
+          if(code && !deveIgnorar(code)){
+            marcarLido(code);
             registrar(code);
-            await new Promise(r=>setTimeout(r,2000));
+            await pausaCam(2000);
           }
         }
       }catch(e){}
-      rafCam = requestAnimationFrame(scanNativo);
-    }
-    rafCam = requestAnimationFrame(scanNativo);
+      rafCam = requestAnimationFrame(scanLoop);
+    };
+    rafCam = requestAnimationFrame(scanLoop);
+    return;
+  }
 
-  // Fallback: jsQR via canvas
-  } else if(typeof jsQR !== 'undefined'){
+  // ---- MÉTODO 2: jsQR via canvas (fallback QR) ----
+  metodo.textContent = 'Motor: jsQR (carregando...)';
+  const jsqrOk = await carregarScript('https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js');
+
+  if(jsqrOk && typeof jsQR !== 'undefined'){
+    metodo.textContent = 'Motor: jsQR canvas';
     const canvas = document.createElement('canvas');
-    const ctx    = canvas.getContext('2d');
-    async function scanJsQR(){
+    const ctx2d  = canvas.getContext('2d');
+
+    const scanLoop = async ()=>{
       if(!camAtiva) return;
-      if(video.readyState === video.HAVE_ENOUGH_DATA){
+      if(video.readyState >= video.HAVE_ENOUGH_DATA && video.videoWidth > 0){
         canvas.width  = video.videoWidth;
         canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const qr  = jsQR(img.data, img.width, img.height);
-        if(qr && qr.data){
-          const code = qr.data.trim().replace(/\D/g,'');
-          if(code){
-            feedbackLeitura();
-            registrar(code);
-            await new Promise(r=>setTimeout(r,2000));
-            return;
+        ctx2d.drawImage(video, 0, 0);
+        try{
+          const img = ctx2d.getImageData(0, 0, canvas.width, canvas.height);
+          const qr  = jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+          if(qr && qr.data){
+            const code = qr.data.trim().replace(/\D/g,'');
+            if(code && !deveIgnorar(code)){
+              marcarLido(code);
+              registrar(code);
+              await pausaCam(2000);
+              rafCam = requestAnimationFrame(scanLoop);
+              return;
+            }
           }
-        }
+        }catch(e){}
       }
-      rafCam = requestAnimationFrame(scanJsQR);
-    }
-    rafCam = requestAnimationFrame(scanJsQR);
-
-  } else {
-    document.getElementById('camStatus').textContent = 'Aguarde — carregando leitor...';
-    setTimeout(()=>{ fecharCamera(); abrirCamera(); }, 1500);
+      rafCam = requestAnimationFrame(scanLoop);
+    };
+    rafCam = requestAnimationFrame(scanLoop);
+    return;
   }
+
+  // ---- MÉTODO 3: ZXing (fallback barcode) ----
+  metodo.textContent = 'Motor: ZXing (carregando...)';
+  const zxingOk = await carregarScript('https://unpkg.com/@zxing/library@latest/umd/index.min.js');
+
+  if(zxingOk && typeof ZXing !== 'undefined'){
+    metodo.textContent = 'Motor: ZXing';
+    try{
+      const hints = new Map();
+      const formats = [
+        ZXing.BarcodeFormat.QR_CODE,
+        ZXing.BarcodeFormat.CODE_128,
+        ZXing.BarcodeFormat.EAN_13,
+        ZXing.BarcodeFormat.EAN_8,
+        ZXing.BarcodeFormat.CODE_39,
+        ZXing.BarcodeFormat.ITF,
+        ZXing.BarcodeFormat.DATA_MATRIX,
+        ZXing.BarcodeFormat.UPC_A,
+        ZXing.BarcodeFormat.UPC_E
+      ];
+      hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
+      const reader = new ZXing.MultiFormatReader();
+      reader.setHints(hints);
+      const canvas = document.createElement('canvas');
+      const ctx2d  = canvas.getContext('2d');
+
+      const scanLoop = ()=>{
+        if(!camAtiva) return;
+        if(video.readyState >= video.HAVE_ENOUGH_DATA && video.videoWidth > 0){
+          canvas.width  = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx2d.drawImage(video, 0, 0);
+          try{
+            const lum  = new ZXing.HTMLCanvasElementLuminanceSource(canvas);
+            const bmp  = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(lum));
+            const res  = reader.decode(bmp);
+            const code = res.getText().trim().replace(/\D/g,'');
+            if(code && !deveIgnorar(code)){
+              marcarLido(code);
+              registrar(code);
+              setTimeout(()=>{ rafCam=requestAnimationFrame(scanLoop); }, 2000);
+              return;
+            }
+          }catch(e){}
+        }
+        rafCam = requestAnimationFrame(scanLoop);
+      };
+      rafCam = requestAnimationFrame(scanLoop);
+      return;
+    }catch(e){}
+  }
+
+  // Nenhum método funcionou
+  status.textContent = '✕ Nenhum leitor disponível neste navegador';
+  status.style.color = '#ff3d57';
+  metodo.textContent = 'Tente usar o Chrome atualizado';
+}
+
+// ---- Helpers câmera ----
+function deveIgnorar(code){
+  const agora = Date.now();
+  if(code === ultimoCodLido && agora - ultimoLidoTs < 2500) return true;
+  return false;
+}
+function marcarLido(code){
+  ultimoCodLido = code;
+  ultimoLidoTs  = Date.now();
+}
+function pausaCam(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function carregarScript(url){
+  return new Promise(resolve=>{
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload  = ()=>resolve(true);
+    s.onerror = ()=>resolve(false);
+    document.head.appendChild(s);
+    setTimeout(()=>resolve(false), 5000); // timeout
+  });
+}
+
+function sinalizarCam(tipo, texto){
+  const overlay = document.getElementById('camOverlay');
+  const status  = document.getElementById('camStatus');
+  if(tipo==='ok'){
+    if(navigator.vibrate) navigator.vibrate(120);
+    overlay.style.outline = '5px solid #00e676';
+    status.textContent = texto;
+    status.style.color = '#00e676';
+  }else{
+    if(navigator.vibrate) navigator.vibrate([200,80,200]);
+    overlay.style.outline = '5px solid #ff3d57';
+    status.textContent = texto;
+    status.style.color = '#ff3d57';
+  }
+  setTimeout(()=>{
+    overlay.style.outline='';
+    status.textContent='Aponte para o código...';
+    status.style.color='';
+  }, 1800);
 }
 
 function fecharCamera(){
   if(!camAtiva) return;
+  camAtiva = false;
   if(rafCam){ cancelAnimationFrame(rafCam); rafCam=null; }
   if(streamCam){ streamCam.getTracks().forEach(t=>t.stop()); streamCam=null; }
+  const video=document.getElementById('camVideo');
+  video.srcObject=null;
   document.getElementById('camOverlay').classList.remove('show');
-  document.getElementById('camStatus').textContent = 'Iniciando câmera...';
-  const video = document.getElementById('camVideo');
-  video.srcObject = null;
-  camAtiva = false; leitor = null;
+  document.getElementById('camStatus').textContent='Iniciando câmera...';
+  document.getElementById('camStatus').style.color='';
+  document.getElementById('metodoAtivo').textContent='';
   focarInput();
 }
 
-// --- ENVIO PARA GOOGLE SHEETS -------------------------------------------------
+// ============================================================
+// ENVIO PLANILHA
+// ============================================================
 async function enviar(item){
-  if(!scriptUrl) return;
-  // Sempre envia qtd=1 — o Apps Script soma na mesma linha
-  const url = scriptUrl + '?cmd=bipe&codigo=' + encodeURIComponent(item.cod) + '&nome=' + encodeURIComponent(item.nome) + '&qtd=1&hora=' + encodeURIComponent(item.hora);
+  const url=scriptUrl+'?cmd=bipe&codigo='+encodeURIComponent(item.cod)+'&nome='+encodeURIComponent(item.nome)+'&qtd=1&hora='+encodeURIComponent(item.hora);
   try{
-    const img = new Image();
-    img.src = url;
+    const img=new Image(); img.src=url;
     estoque[item.cod].sync='ok'; salvarE(); renderLista();
     setConn('ok','SINCRONIZADO');
   }catch(e){
@@ -616,11 +654,31 @@ function atualizarFilaUI(){
   document.getElementById('filaBadge').style.display=fila.length>0?'inline':'none';
 }
 
-// --- LISTA --------------------------------------------------------------------
+// ============================================================
+// UI
+// ============================================================
+function setConn(s,t){
+  const c={ok:'#00e676',err:'#ff3d57',busy:'#ffd600',off:'#3d5470'};
+  const d=document.getElementById('connDot');
+  d.style.background=c[s]||c.off;
+  d.style.boxShadow=s!=='off'?'0 0 8px '+(c[s]||'#fff'):'none';
+  const tx=document.getElementById('connTxt');
+  tx.textContent=t; tx.style.color=c[s]||c.off;
+}
+
+function mostrarUlt(cod){
+  const it=estoque[cod]; if(!it) return;
+  document.getElementById('cardUlt').style.display='block';
+  document.getElementById('ultCod').textContent=it.cod;
+  document.getElementById('ultNome').textContent=it.nome;
+  document.getElementById('ultHora').textContent=it.hora;
+  document.getElementById('ultQtd').textContent=it.qtd;
+}
+
 function renderLista(){
   const list=document.getElementById('histList');
-  const cnt =document.getElementById('histCount');
-  const its =Object.values(estoque);
+  const cnt=document.getElementById('histCount');
+  const its=Object.values(estoque);
   cnt.textContent=its.length+' item'+(its.length!==1?'ns':'');
   if(!its.length){list.innerHTML='<div class="empty-msg">Nenhuma leitura ainda.</div>';return;}
   list.innerHTML=its.map(h=>`
@@ -633,7 +691,7 @@ function renderLista(){
       <div class="hi-right">
         <div class="hi-qtd">${h.qtd}x</div>
         <div class="hi-sync ${h.sync==='ok'?'sync-ok':h.sync==='err'?'sync-err':'sync-nd'}"></div>
-        <button class="btn-del" onclick="del('${h.cod}')">X</button>
+        <button class="btn-del" onclick="del('${h.cod}')">✕</button>
       </div>
     </div>`).join('');
 }
@@ -654,47 +712,36 @@ function contadores(){
 function limparEstoque(){
   if(!Object.keys(estoque).length){fb('warn','Já está vazio.');return;}
   if(!confirm('Limpar todos os itens bipados?')) return;
-  estoque={}; fila=[]; 
+  estoque={}; fila=[];
   localStorage.removeItem('btE'); localStorage.removeItem('btF');
   renderLista(); contadores(); atualizarFilaUI();
   document.getElementById('cardUlt').style.display='none';
   fb('ok','Limpado com sucesso!');
 }
 
-// --- POPUP NÃO CADASTRADO -----------------------------------------------------
 function mostrarPopupNaoCad(cod){
-  document.getElementById('popupNaoCadCod').textContent = cod;
-  const el = document.getElementById('popupNaoCad');
-  el.style.display = 'flex';
+  document.getElementById('popupNaoCadCod').textContent=cod;
+  document.getElementById('popupNaoCad').style.display='flex';
 }
 function fecharPopupNaoCad(){
-  document.getElementById('popupNaoCad').style.display = 'none';
+  document.getElementById('popupNaoCad').style.display='none';
   focarInput();
 }
 
-// --- EXPORTAR MANUAL ----------------------------------------------------------
 function abrirExportar(){
-  const its = Object.values(estoque);
-  if(!its.length){ fb('warn','Nenhum item para exportar.'); return; }
-  
-  let texto = 'CÓDIGO	CHICOTE	QTD	ÚLT. LEITURA
-';
-  its.forEach(h => {
-    texto += h.cod + '	' + h.nome + '	' + h.qtd + '	' + h.hora + '
-';
-  });
-  
-  document.getElementById('exportTexto').value = texto;
-  document.getElementById('popupExportar').style.display = 'flex';
+  const its=Object.values(estoque);
+  if(!its.length){fb('warn','Nenhum item para exportar.');return;}
+  let texto='CÓDIGO\tCHICOTE\tQTD\tÚLT. LEITURA\n';
+  its.forEach(h=>{texto+=h.cod+'\t'+h.nome+'\t'+h.qtd+'\t'+h.hora+'\n';});
+  document.getElementById('exportTexto').value=texto;
+  document.getElementById('popupExportar').style.display='flex';
 }
-
 function fecharExportar(){
-  document.getElementById('popupExportar').style.display = 'none';
+  document.getElementById('popupExportar').style.display='none';
   focarInput();
 }
-
 function copiarExport(){
-  const ta = document.getElementById('exportTexto');
+  const ta=document.getElementById('exportTexto');
   ta.select();
   document.execCommand('copy');
   fb('ok','Copiado! Cole na planilha com Ctrl+V.');
