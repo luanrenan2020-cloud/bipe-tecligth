@@ -182,7 +182,7 @@ function somErro(){
         <div class="scan-pulse"></div>
         AGUARDANDO BIPE...
       </div>
-      <button class="btn-cam" onclick="abrirCamera()" style="margin-top:10px;">
+      <button class="btn-cam" id="btnCam" style="margin-top:10px;">
          &nbsp;LER COM CÂMERA
       </button>
       <div id="feedback"></div>
@@ -342,6 +342,11 @@ window.addEventListener('load',()=>{
   focarInput();
 
   if(fila.length) setTimeout(reenviarFila,1500);
+
+  // Garante que o botão câmera funciona no Android (touch + click)
+  const btnCam = document.getElementById('btnCam');
+  btnCam.addEventListener('click', abrirCamera);
+  btnCam.addEventListener('touchend', function(e){ e.preventDefault(); abrirCamera(); });
 });
 
 // --- FOCO NO INPUT OCULTO -----------------------------------------------------
@@ -482,7 +487,7 @@ async function abrirCamera(){
   const overlay = document.getElementById('camOverlay');
   overlay.classList.add('show');
   camAtiva = true;
-  document.getElementById('camStatus').textContent = 'Aponte para o código...';
+  document.getElementById('camStatus').textContent = 'Solicitando permissão de câmera...';
   const video = document.getElementById('camVideo');
 
   try {
@@ -491,8 +496,9 @@ async function abrirCamera(){
     });
     video.srcObject = streamCam;
     await video.play();
+    document.getElementById('camStatus').textContent = 'Aponte para o código...';
   } catch(e) {
-    document.getElementById('camStatus').textContent = 'Erro ao acessar câmera: ' + e.message;
+    document.getElementById('camStatus').textContent = 'Erro: ' + e.message + ' — Verifique permissão de câmera.';
     return;
   }
 
