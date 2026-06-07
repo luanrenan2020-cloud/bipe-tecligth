@@ -343,10 +343,20 @@ window.addEventListener('load',()=>{
 
   if(fila.length) setTimeout(reenviarFila,1500);
 
-  // Garante que o botão câmera funciona no Android (touch + click)
+  // Botão câmera — funciona no Android
   const btnCam = document.getElementById('btnCam');
-  btnCam.addEventListener('click', abrirCamera);
-  btnCam.addEventListener('touchend', function(e){ e.preventDefault(); abrirCamera(); });
+  btnCam.addEventListener('touchstart', function(e){
+    e.stopPropagation();
+  }, {passive: true});
+  btnCam.addEventListener('touchend', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    abrirCamera();
+  });
+  btnCam.addEventListener('click', function(e){
+    e.stopPropagation();
+    abrirCamera();
+  });
 });
 
 // --- FOCO NO INPUT OCULTO -----------------------------------------------------
@@ -484,21 +494,25 @@ function feedbackLeitura(){
 let streamCam = null, rafCam = null;
 
 async function abrirCamera(){
+  // Tira foco de qualquer elemento antes de pedir câmera
+  document.activeElement && document.activeElement.blur();
+  document.getElementById('codeInput').blur();
+
   const overlay = document.getElementById('camOverlay');
   overlay.classList.add('show');
   camAtiva = true;
-  document.getElementById('camStatus').textContent = 'Solicitando permissão de câmera...';
+  document.getElementById('camStatus').textContent = 'Abrindo câmera...';
   const video = document.getElementById('camVideo');
 
   try {
     streamCam = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width:{ideal:1280}, height:{ideal:720} }
+      video: { facingMode: { ideal: 'environment' } }
     });
     video.srcObject = streamCam;
     await video.play();
     document.getElementById('camStatus').textContent = 'Aponte para o código...';
   } catch(e) {
-    document.getElementById('camStatus').textContent = 'Erro: ' + e.message + ' — Verifique permissão de câmera.';
+    document.getElementById('camStatus').textContent = 'Erro: ' + e.message;
     return;
   }
 
