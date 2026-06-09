@@ -322,7 +322,7 @@ function registrar(raw){
 async function enviar(item){
   const url=scriptUrl+'?cmd=bipe&codigo='+encodeURIComponent(item.cod)+'&nome='+encodeURIComponent(item.nome)+'&qtd=1&hora='+encodeURIComponent(item.hora);
   try{
-    const img=new Image(); img.src=url;
+    await fetch(url,{method:'GET',mode:'no-cors',cache:'no-cache'});
     estoque[item.cod].sync='ok'; salvarE(); renderLista();
     setConn('ok','SINCRONIZADO');
   }catch(e){
