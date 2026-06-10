@@ -51,18 +51,55 @@
   .cnt-lbl{font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .c-b{color:var(--accent);}.c-u{color:var(--green);}.c-t{color:var(--yellow);}
 
-  .hist-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;}
-  .hist-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:7px;animation:su .18s ease;}
+  .hist-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding-right:2px;}
+  .hist-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(0,200,255,.08);
+    border-left:3px solid rgba(0,200,255,.35);
+    border-radius:8px;
+    animation:su .18s ease;
+    gap:10px;
+  }
   @keyframes su{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-  .hi-left{display:flex;flex-direction:column;gap:2px;min-width:0;}
-  .hi-cod{font-family:'Share Tech Mono',monospace;font-size:.82rem;color:var(--accent);letter-spacing:1.5px;}
-  .hi-nome{font-size:.72rem;color:var(--text);opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
-  .hi-hora{font-size:.6rem;color:var(--muted);}
-  .hi-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-  .hi-qtd{font-family:'Share Tech Mono',monospace;font-size:.9rem;color:var(--yellow);font-weight:700;}
-  .hi-sync{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-  .sync-ok{background:var(--green);}.sync-err{background:var(--red);}.sync-nd{background:var(--muted);}
-  .btn-del{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,61,87,.4);background:transparent;color:var(--red);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .hi-left{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1;}
+  .hi-nome{
+    font-family:'Rajdhani',sans-serif;
+    font-size:.95rem;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    line-height:1.1;
+  }
+  .hi-cod{
+    font-family:'Share Tech Mono',monospace;
+    font-size:.78rem;
+    color:var(--accent);
+    letter-spacing:2px;
+    opacity:.85;
+  }
+  .hi-hora{
+    font-size:.58rem;
+    color:var(--muted);
+    letter-spacing:.5px;
+    margin-top:1px;
+  }
+  .hi-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .hi-qtd{
+    font-family:'Share Tech Mono',monospace;
+    font-size:1.1rem;
+    color:var(--yellow);
+    font-weight:700;
+    min-width:28px;
+    text-align:right;
+  }
+  .hi-sync{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .sync-ok{background:var(--green);box-shadow:0 0 4px var(--green);}
+  .sync-err{background:var(--red);box-shadow:0 0 4px var(--red);}
+  .sync-nd{background:var(--muted);}
+  .btn-del{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,61,87,.4);background:transparent;color:var(--red);font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .btn-del:active{background:rgba(255,61,87,.2);}
   .empty-msg{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;letter-spacing:1px;}
 
@@ -434,8 +471,8 @@ function renderLista(){
   list.innerHTML=its.map(h=>`
     <div class="hist-item">
       <div class="hi-left">
-        <div class="hi-cod">${h.cod}</div>
         <div class="hi-nome">${h.nome}</div>
+        <div class="hi-cod">${h.cod}</div>
         <div class="hi-hora">${h.hora}</div>
       </div>
       <div class="hi-right">
