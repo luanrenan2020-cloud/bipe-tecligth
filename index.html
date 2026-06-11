@@ -151,7 +151,7 @@ function somErro(){
   <header>
     <div class="hdr-top">
       <div class="brand">BIPE <span>TECLIGTH</span></div>
-      <span class="badge-v">v5.2</span>
+      <span class="badge-v">v5.3</span>
     </div>
     <div class="conn-row">
       <div id="connDot" style="background:#00e676;box-shadow:0 0 8px #00e676;"></div>
@@ -243,7 +243,7 @@ function somErro(){
 
 <script>
 // ============================================================
-// CADASTRO — atualizado
+// CADASTRO
 // ============================================================
 const CAD = {
   // ── CHICOTE ANTERIOR ──────────────────────────────────────
@@ -285,13 +285,13 @@ const CAD = {
   "522638740":"CHICOTE ANTERIOR",
   "522682250":"CHICOTE ANTERIOR",
   // ── CHICOTE PORTA ─────────────────────────────────────────
-   "522194520":"CHICOTE PORTA",
-   "522194530":"CHICOTE PORTA",
-   "521625540":"CHICOTE PORTA",
-   "521625550":"CHICOTE PORTA",
-   "521625560":"CHICOTE PORTA",
-   "521625590":"CHICOTE PORTA",
-   "521625600":"CHICOTE PORTA",
+  "522194520":"CHICOTE PORTA",
+  "522194530":"CHICOTE PORTA",
+  "521625540":"CHICOTE PORTA",
+  "521625550":"CHICOTE PORTA",
+  "521625560":"CHICOTE PORTA",
+  "521625590":"CHICOTE PORTA",
+  "521625600":"CHICOTE PORTA",
   "521750510":"CHICOTE PORTA",
   "521625610":"CHICOTE PORTA",
   "521625640":"CHICOTE PORTA",
@@ -399,14 +399,18 @@ function registrar(raw){
   somBipe();
   fb('ok',raw+' — '+n+' · QTD: '+estoque[raw].qtd+' · enviando...');
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
-  setConn('busy','ENVIANDO...'); enviar(estoque[raw]);
+  setConn('busy','ENVIANDO...');
+
+  // ✅ CORREÇÃO v5.3: envia qtd ACUMULADA real, não qtd=1 fixo
+  enviar(estoque[raw]);
 }
 
 // ============================================================
 // ENVIO PLANILHA
 // ============================================================
 async function enviar(item){
-  const params="cmd=bipe&codigo="+encodeURIComponent(item.cod)+"&nome="+encodeURIComponent(item.nome)+"&qtd=1&hora="+encodeURIComponent(item.hora)+"&t="+Date.now();
+  // ✅ CORREÇÃO: item.qtd contém a quantidade real acumulada
+  const params="cmd=bipe&codigo="+encodeURIComponent(item.cod)+"&nome="+encodeURIComponent(item.nome)+"&qtd="+encodeURIComponent(item.qtd)+"&hora="+encodeURIComponent(item.hora)+"&t="+Date.now();
   const url=scriptUrl+"?"+params;
   try{
     const controller=new AbortController();
