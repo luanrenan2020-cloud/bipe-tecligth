@@ -51,55 +51,60 @@
   .cnt-lbl{font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .c-b{color:var(--accent);}.c-u{color:var(--green);}.c-t{color:var(--yellow);}
 
-  .hist-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding-right:2px;}
-  .hist-item{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:12px 14px;
-    background:rgba(255,255,255,.03);
-    border:1px solid rgba(0,200,255,.08);
-    border-left:3px solid rgba(0,200,255,.35);
-    border-radius:8px;
-    animation:su .18s ease;
-    gap:10px;
-  }
+  .hist-list{display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto;padding:2px;}
   @keyframes su{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-  .hi-left{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1;}
+  .hist-item{
+    display:flex;align-items:stretch;
+    background:#0a1828;
+    border:1px solid #1e3450;
+    border-radius:10px;
+    overflow:hidden;
+    animation:su .18s ease;
+  }
+  .hi-barra{width:4px;flex-shrink:0;background:var(--accent);}
+  .hi-left{flex:1;padding:14px 12px;display:flex;flex-direction:column;min-width:0;}
   .hi-nome{
     font-family:'Rajdhani',sans-serif;
-    font-size:.95rem;
+    font-size:1.05rem;
     font-weight:700;
-    color:var(--text);
-    letter-spacing:1.5px;
+    color:#ffffff;
+    letter-spacing:2px;
     text-transform:uppercase;
-    line-height:1.1;
+    line-height:1.2;
+    margin-bottom:10px;
   }
+  .hi-divisor{height:1px;background:rgba(0,200,255,.2);margin-bottom:10px;}
   .hi-cod{
     font-family:'Share Tech Mono',monospace;
-    font-size:.78rem;
+    font-size:.88rem;
     color:var(--accent);
-    letter-spacing:2px;
-    opacity:.85;
+    letter-spacing:3px;
+    margin-bottom:6px;
   }
   .hi-hora{
-    font-size:.58rem;
+    font-family:'Share Tech Mono',monospace;
+    font-size:.6rem;
     color:var(--muted);
-    letter-spacing:.5px;
-    margin-top:1px;
+    letter-spacing:1px;
   }
-  .hi-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .hi-right{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;padding:12px 14px;
+    border-left:1px solid #1e3450;
+    flex-shrink:0;min-width:60px;
+  }
   .hi-qtd{
     font-family:'Share Tech Mono',monospace;
-    font-size:1.1rem;
+    font-size:1.5rem;
     color:var(--yellow);
     font-weight:700;
-    min-width:28px;
-    text-align:right;
+    line-height:1;
   }
-  .hi-sync{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-  .sync-ok{background:var(--green);box-shadow:0 0 4px var(--green);}
-  .sync-err{background:var(--red);box-shadow:0 0 4px var(--red);}
+  .hi-sync{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .sync-ok{background:var(--green);box-shadow:0 0 5px var(--green);}
+  .sync-err{background:var(--red);box-shadow:0 0 5px var(--red);}
   .sync-nd{background:var(--muted);}
-  .btn-del{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,61,87,.4);background:transparent;color:var(--red);font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .btn-del{width:28px;height:28px;border-radius:6px;border:1px solid rgba(255,61,87,.4);background:transparent;color:var(--red);font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .btn-del:active{background:rgba(255,61,87,.2);}
   .empty-msg{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;letter-spacing:1px;}
 
@@ -279,8 +284,6 @@ const CAD = {
   "522638760":"CHICOTE ANTERIOR",
   "522638740":"CHICOTE ANTERIOR",
   "522682250":"CHICOTE ANTERIOR",
-  "522194530":"CHICOTE ANTERIOR",
-
   // ── CHICOTE PORTA ─────────────────────────────────────────
   "521750510":"CHICOTE PORTA",
   "521625610":"CHICOTE PORTA",
@@ -472,8 +475,10 @@ function renderLista(){
   if(!its.length){list.innerHTML='<div class="empty-msg">Nenhuma leitura ainda.</div>';return;}
   list.innerHTML=its.map(h=>`
     <div class="hist-item">
+      <div class="hi-barra"></div>
       <div class="hi-left">
         <div class="hi-nome">${h.nome}</div>
+        <div class="hi-divisor"></div>
         <div class="hi-cod">${h.cod}</div>
         <div class="hi-hora">${h.hora}</div>
       </div>
