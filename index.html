@@ -151,7 +151,7 @@ function somErro(){
   <header>
     <div class="hdr-top">
       <div class="brand">BIPE <span>TECLIGTH</span></div>
-      <span class="badge-v">v5.3</span>
+      <span class="badge-v">v5.4</span>
     </div>
     <div class="conn-row">
       <div id="connDot" style="background:#00e676;box-shadow:0 0 8px #00e676;"></div>
@@ -401,8 +401,8 @@ function registrar(raw){
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
   setConn('busy','ENVIANDO...');
 
-  // ✅ CORREÇÃO v5.3: envia qtd ACUMULADA real, não qtd=1 fixo
-  enviar(estoque[raw]);
+  // ✅ v5.4: sempre envia qtd=1 por bipe — planilha acumula somando
+  enviar({...estoque[raw], qtd:1});
 }
 
 // ============================================================
@@ -444,7 +444,8 @@ async function reenviarFila(){
   setConn('busy','REENVIANDO...');
   const pend=[...fila]; fila=[]; localStorage.setItem('btF','[]'); atualizarFilaUI();
   for(const it of pend){
-    const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:it.qtd,hora:it.hora});
+  // ✅ v5.4: reenvia cada item com qtd=1 unitário
+    const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:1,hora:it.hora});
     try{ await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'}); await new Promise(r=>setTimeout(r,250)); }
     catch(e){ fila.push(it); }
   }
