@@ -151,7 +151,7 @@ function somErro(){
   <header>
     <div class="hdr-top">
       <div class="brand">BIPE <span>TECLIGTH</span></div>
-      <span class="badge-v">v5.5</span>
+      <span class="badge-v">v5.6</span>
     </div>
     <div class="conn-row">
       <div id="connDot" style="background:#00e676;box-shadow:0 0 8px #00e676;"></div>
@@ -284,9 +284,6 @@ const CAD = {
   "522638760":"CHICOTE ANTERIOR",
   "522638740":"CHICOTE ANTERIOR",
   "522682250":"CHICOTE ANTERIOR",
-  "522242460":"CHICOTE ANTERIOR",
-  "522242430":"CHICOTE ANTERIOR",
-
   // ── CHICOTE PORTA ─────────────────────────────────────────
   "522194520":"CHICOTE PORTA",
   "522194530":"CHICOTE PORTA",
@@ -332,9 +329,7 @@ const CAD = {
   "522641690":"PAINEL DE INSTRUMENTOS",
   "522641670":"PAINEL DE INSTRUMENTOS",
   "522638770":"PAINEL DE INSTRUMENTOS",
-  "522638780":"PAINEL DE INSTRUMENTOS",
-  "522737510":"PAINEL DE INSTRUMENTOS",
-  "522737500":"PAINEL DE INSTRUMENTOS",
+  "522638780":"PAINEL DE INSTRUMENTOS"
 };
 
 // ============================================================
@@ -350,12 +345,18 @@ function nomeCod(c){ return CAD[c]||'NÃO CADASTRADO'; }
 // ============================================================
 // INIT
 // ============================================================
-// ✅ v5.5: volta ao foco ao retornar do segundo plano
+// ✅ v5.6: recarrega dados do localStorage ao voltar do segundo plano
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible') focarInput();
+  if(document.visibilityState==='visible'){
+    try{const eStr=localStorage.getItem('btE');const fStr=localStorage.getItem('btF');if(eStr)estoque=JSON.parse(eStr);if(fStr)fila=JSON.parse(fStr);}catch(e){}
+    renderLista();contadores();atualizarFilaUI();focarInput();
+  }
 });
 
-window.addEventListener('focus',()=>{ focarInput(); });
+window.addEventListener('focus',()=>{
+  try{const eStr=localStorage.getItem('btE');const fStr=localStorage.getItem('btF');if(eStr)estoque=JSON.parse(eStr);if(fStr)fila=JSON.parse(fStr);}catch(e){}
+  renderLista();contadores();atualizarFilaUI();focarInput();
+});
 
 window.addEventListener('load',()=>{
   setConn('ok','CONECTADO');
@@ -413,7 +414,7 @@ function registrar(raw){
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
   setConn('busy','ENVIANDO...');
 
-  // ✅ v5.5: sempre envia qtd=1 por bipe — planilha acumula somando
+  // ✅ v5.6: sempre envia qtd=1 por bipe — planilha acumula somando
   enviar({...estoque[raw], qtd:1});
 }
 
@@ -456,7 +457,7 @@ async function reenviarFila(){
   setConn('busy','REENVIANDO...');
   const pend=[...fila]; fila=[]; localStorage.setItem('btF','[]'); atualizarFilaUI();
   for(const it of pend){
-  // ✅ v5.5: reenvia cada item com qtd=1 unitário
+  // ✅ v5.6: reenvia cada item com qtd=1 unitário
     const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:1,hora:it.hora});
     try{ await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'}); await new Promise(r=>setTimeout(r,250)); }
     catch(e){ fila.push(it); }
