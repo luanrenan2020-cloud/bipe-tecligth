@@ -151,7 +151,7 @@ function somErro(){
   <header>
     <div class="hdr-top">
       <div class="brand">BIPE <span>TECLIGTH</span></div>
-      <span class="badge-v">v5.4</span>
+      <span class="badge-v">v5.5</span>
     </div>
     <div class="conn-row">
       <div id="connDot" style="background:#00e676;box-shadow:0 0 8px #00e676;"></div>
@@ -345,6 +345,13 @@ function nomeCod(c){ return CAD[c]||'NÃO CADASTRADO'; }
 // ============================================================
 // INIT
 // ============================================================
+// ✅ v5.5: volta ao foco ao retornar do segundo plano
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') focarInput();
+});
+
+window.addEventListener('focus',()=>{ focarInput(); });
+
 window.addEventListener('load',()=>{
   setConn('ok','CONECTADO');
   renderLista(); contadores(); atualizarFilaUI(); focarInput();
@@ -401,7 +408,7 @@ function registrar(raw){
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
   setConn('busy','ENVIANDO...');
 
-  // ✅ v5.4: sempre envia qtd=1 por bipe — planilha acumula somando
+  // ✅ v5.5: sempre envia qtd=1 por bipe — planilha acumula somando
   enviar({...estoque[raw], qtd:1});
 }
 
@@ -444,7 +451,7 @@ async function reenviarFila(){
   setConn('busy','REENVIANDO...');
   const pend=[...fila]; fila=[]; localStorage.setItem('btF','[]'); atualizarFilaUI();
   for(const it of pend){
-  // ✅ v5.4: reenvia cada item com qtd=1 unitário
+  // ✅ v5.5: reenvia cada item com qtd=1 unitário
     const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:1,hora:it.hora});
     try{ await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'}); await new Promise(r=>setTimeout(r,250)); }
     catch(e){ fila.push(it); }
