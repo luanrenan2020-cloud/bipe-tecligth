@@ -58,11 +58,12 @@
     background:#0a1828;
     border:1px solid #1e3450;
     border-radius:10px;
-    overflow:hidden;
+    overflow:visible;
     animation:su .18s ease;
+    min-height:90px;
   }
   .hi-barra{width:4px;flex-shrink:0;background:var(--accent);}
-  .hi-left{flex:1;padding:14px 12px;display:flex;flex-direction:column;min-width:0;}
+  .hi-left{flex:1;padding:12px 12px;display:flex;flex-direction:column;min-width:0;overflow:visible;min-height:90px;}
   .hi-nome{
     font-family:'Rajdhani',sans-serif;
     font-size:.95rem;
@@ -76,13 +77,16 @@
     overflow-wrap:break-word;
     white-space:normal;
   }
-  .hi-divisor{height:1px;background:rgba(0,200,255,.2);margin-bottom:10px;}
+  .hi-divisor{height:1px;background:rgba(0,200,255,.2);margin-bottom:10px;display:block !important;}
   .hi-cod{
     font-family:'Share Tech Mono',monospace;
-    font-size:.88rem;
+    font-size:.82rem;
     color:var(--accent);
-    letter-spacing:3px;
+    letter-spacing:2px;
     margin-bottom:6px;
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
   }
   .hi-hora{
     font-family:'Share Tech Mono',monospace;
@@ -154,7 +158,7 @@ function somErro(){
   <header>
     <div class="hdr-top">
       <div class="brand">BIPE <span>TECLIGTH</span></div>
-      <span class="badge-v">v5.9</span>
+      <span class="badge-v">v6.0</span>
     </div>
     <div class="conn-row">
       <div id="connDot" style="background:#00e676;box-shadow:0 0 8px #00e676;"></div>
@@ -348,7 +352,7 @@ function nomeCod(c){ return CAD[c]||'NÃO CADASTRADO'; }
 // ============================================================
 // INIT
 // ============================================================
-// ✅ v5.9: recarrega dados do localStorage ao voltar do segundo plano
+// ✅ v6.0: recarrega dados do localStorage ao voltar do segundo plano
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'){
     try{const eStr=localStorage.getItem('btE');const fStr=localStorage.getItem('btF');if(eStr)estoque=JSON.parse(eStr);if(fStr)fila=JSON.parse(fStr);}catch(e){}
@@ -418,7 +422,7 @@ function registrar(raw){
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
   setConn('busy','ENVIANDO...');
 
-  // ✅ v5.9: sempre envia qtd=1 por bipe — planilha acumula somando
+  // ✅ v6.0: sempre envia qtd=1 por bipe — planilha acumula somando
   enviar({...estoque[raw], qtd:1});
 }
 
@@ -461,7 +465,7 @@ async function reenviarFila(){
   setConn('busy','REENVIANDO...');
   const pend=[...fila]; fila=[]; localStorage.setItem('btF','[]'); atualizarFilaUI();
   for(const it of pend){
-  // ✅ v5.9: reenvia cada item com qtd=1 unitário
+  // ✅ v6.0: reenvia cada item com qtd=1 unitário
     const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:1,hora:it.hora});
     try{ await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'}); await new Promise(r=>setTimeout(r,250)); }
     catch(e){ fila.push(it); }
@@ -497,7 +501,7 @@ function mostrarUlt(cod){
 }
 
 function renderLista(){
-  // ✅ v5.9: sempre recarrega do localStorage antes de renderizar
+  // ✅ v6.0: sempre recarrega do localStorage antes de renderizar
   try{
     const eStr=localStorage.getItem('btE');
     if(eStr){ const parsed=JSON.parse(eStr); if(Object.keys(parsed).length>0) estoque=parsed; }
