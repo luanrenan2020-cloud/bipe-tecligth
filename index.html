@@ -496,6 +496,11 @@ function mostrarUlt(cod){
 }
 
 function renderLista(){
+  // ✅ v5.7: sempre recarrega do localStorage antes de renderizar
+  try{
+    const eStr=localStorage.getItem('btE');
+    if(eStr){ const parsed=JSON.parse(eStr); if(Object.keys(parsed).length>0) estoque=parsed; }
+  }catch(e){}
   const list=document.getElementById('histList');
   const cnt=document.getElementById('histCount');
   const its=Object.values(estoque);
