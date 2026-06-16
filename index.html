@@ -153,7 +153,7 @@ function somErro(){
       <div class="brand">BIPE <span>TECLIGTH</span></div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span id="modoBadge" class="modo-normal">NORMAL</span>
-        <span class="badge-v">v7.0</span>
+        <span class="badge-v">v7.1</span>
       </div>
     </div>
     <div class="conn-row">
@@ -305,38 +305,32 @@ function nomeCod(c){ return CAD[c]||null; }
 
 // ============================================================
 // DETECTOR DE QR PALLET STELLANTIS
-// Estrutura por bloco de 42 chars:
-// [NF Desenho 9][NF Embalagem 9][Desenho 11][Qtd Total 5][Embalagem 4][QtdEmb 4]
+// Estrutura por bloco de 55 chars:
+// [Desenho 11][DE 7][Indice 2][NF 9][NFEmb 9][Qtd 5][Emb 4][QtdEmb 4][Fim 4]
 // ============================================================
 function detectarPallet(raw){
-  // Só tenta se string >= 84 chars (mínimo 2 blocos) e só dígitos
-  if(raw.length < 42 || !/^\d+$/.test(raw)) return null;
-
+  if(raw.length < 55 || !/^\d+$/.test(raw)) return null;
+  if(raw.length % 55 !== 0) return null;
   const itens = [];
   let pos = 0;
-
-  while(pos + 42 <= raw.length){
-    const nfDesenho  = raw.substring(pos, pos+9);
-    const nfEmb      = raw.substring(pos+9, pos+18);
-    const desenhoRaw = raw.substring(pos+18, pos+29);
-    const qtdRaw     = raw.substring(pos+29, pos+34);
-    // embalagem 4 + qtdEmb 4 = 8 chars restantes do bloco
-
-    const qtd = parseInt(qtdRaw, 10);
-    // Remove zeros à esquerda do desenho
-    const codigo = String(parseInt(desenhoRaw, 10));
-
-    if(codigo && qtd >= 0){
+  while(pos + 55 <= raw.length){
+    const desenhoRaw = raw.substring(pos, pos+11);      // 11: Desenho
+    // pos+11: DE 7 chars
+    // pos+18: Indice 2 chars
+    // pos+20: NF 9 chars
+    // pos+29: NFEmb 9 chars
+    const qtdRaw = raw.substring(pos+38, pos+43);       // 5: Quantidade
+    // pos+43: Emb 4 chars
+    // pos+47: QtdEmb 4 chars
+    // pos+51: Fim 4 chars (ex: 1612)
+    const qtd    = parseInt(qtdRaw, 10);
+    const codigo = String(parseInt(desenhoRaw, 10));    // remove zeros a esquerda
+    if(codigo && !isNaN(qtd) && qtd >= 0){
       itens.push({ codigo, qtd });
     }
-    pos += 42;
+    pos += 55;
   }
-
-  // Só considera pallet se extraiu pelo menos 1 item E o raw tem múltiplos de 42 chars
-  // OU se o código tem mais de 11 dígitos (claramente não é um código simples)
-  if(itens.length > 0 && raw.length > 11){
-    return itens;
-  }
+  if(itens.length > 0) return itens;
   return null;
 }
 
