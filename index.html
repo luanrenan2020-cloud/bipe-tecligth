@@ -21,6 +21,11 @@
   #connTxt{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:1px;}
   #filaBadge{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--yellow);margin-left:auto;display:none;}
 
+  /* MODO BADGE */
+  #modoBadge{font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:3px 8px;border-radius:4px;letter-spacing:1px;margin-left:8px;display:none;}
+  #modoBadge.modo-normal{display:inline;background:rgba(0,200,255,.1);border:1px solid var(--accent);color:var(--accent);}
+  #modoBadge.modo-pallet{display:inline;background:rgba(255,140,0,.15);border:1px solid var(--orange);color:var(--orange);}
+
   .body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;}
   .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;}
   .card-label{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
@@ -35,6 +40,7 @@
 
   .scan-status{display:flex;align-items:center;justify-content:center;gap:10px;padding:18px;border:1px dashed rgba(0,200,255,.2);border-radius:8px;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:1px;}
   .scan-pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:blink 1.2s ease-in-out infinite;}
+  .scan-pulse.orange{background:var(--orange);}
   @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
 
   #cardUlt{display:none;}
@@ -45,6 +51,20 @@
   .ult-qtd-val{font-family:'Share Tech Mono',monospace;font-size:2.2rem;color:var(--yellow);font-weight:700;line-height:1;text-align:center;}
   .ult-qtd-lbl{font-size:.55rem;letter-spacing:2px;color:var(--muted);text-align:center;}
 
+  /* CARD PALLET */
+  #cardPallet{display:none;}
+  .pallet-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .pallet-title{font-size:.9rem;font-weight:700;letter-spacing:2px;color:var(--orange);}
+  .pallet-count{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--muted);}
+  .pallet-list{display:flex;flex-direction:column;gap:6px;}
+  .pallet-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,140,0,.06);border:1px solid rgba(255,140,0,.2);border-radius:7px;padding:9px 12px;}
+  .pallet-item-left{display:flex;flex-direction:column;gap:2px;}
+  .pallet-item-cod{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:var(--accent);letter-spacing:1px;}
+  .pallet-item-nome{font-size:.75rem;color:var(--text);}
+  .pallet-item-qtd{font-family:'Share Tech Mono',monospace;font-size:1.3rem;color:var(--orange);font-weight:700;}
+  .pallet-item.nao-cad{background:rgba(255,61,87,.06);border-color:rgba(255,61,87,.25);}
+  .pallet-item.nao-cad .pallet-item-nome{color:var(--red);}
+
   .counters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .cnt-box{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:11px 8px;text-align:center;}
   .cnt-val{font-family:'Share Tech Mono',monospace;font-size:1.6rem;font-weight:700;line-height:1;margin-bottom:3px;}
@@ -53,60 +73,16 @@
 
   .hist-list{display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto;padding:2px;}
   @keyframes su{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-  .hist-item{
-    display:flex;align-items:stretch;
-    background:#0a1828;
-    border:1px solid #1e3450;
-    border-radius:10px;
-    overflow:visible;
-    animation:su .18s ease;
-    min-height:90px;
-  }
+  .hist-item{display:flex;align-items:stretch;background:#0a1828;border:1px solid #1e3450;border-radius:10px;overflow:visible;animation:su .18s ease;min-height:90px;}
   .hi-barra{width:4px;flex-shrink:0;background:var(--accent);}
+  .hi-barra.orange{background:var(--orange);}
   .hi-left{flex:1;padding:12px 12px;display:flex;flex-direction:column;min-width:0;overflow:visible;min-height:90px;}
-  .hi-nome{
-    font-family:'Rajdhani',sans-serif;
-    font-size:.95rem;
-    font-weight:700;
-    color:#ffffff;
-    letter-spacing:0px;
-    text-transform:uppercase;
-    line-height:1.2;
-    margin-bottom:10px;
-    word-break:break-word;
-    overflow-wrap:break-word;
-    white-space:normal;
-  }
+  .hi-nome{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:#ffffff;letter-spacing:0px;text-transform:uppercase;line-height:1.2;margin-bottom:10px;word-break:break-word;overflow-wrap:break-word;white-space:normal;}
   .hi-divisor{height:1px;background:rgba(0,200,255,.2);margin-bottom:10px;display:block !important;}
-  .hi-cod{
-    font-family:'Share Tech Mono',monospace;
-    font-size:.82rem;
-    color:var(--accent);
-    letter-spacing:2px;
-    margin-bottom:6px;
-    display:block !important;
-    visibility:visible !important;
-    opacity:1 !important;
-  }
-  .hi-hora{
-    font-family:'Share Tech Mono',monospace;
-    font-size:.6rem;
-    color:var(--muted);
-    letter-spacing:1px;
-  }
-  .hi-right{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:8px;padding:12px 14px;
-    border-left:1px solid #1e3450;
-    flex-shrink:0;min-width:60px;
-  }
-  .hi-qtd{
-    font-family:'Share Tech Mono',monospace;
-    font-size:1.5rem;
-    color:var(--yellow);
-    font-weight:700;
-    line-height:1;
-  }
+  .hi-cod{font-family:'Share Tech Mono',monospace;font-size:.82rem;color:var(--accent);letter-spacing:2px;margin-bottom:6px;display:block !important;visibility:visible !important;opacity:1 !important;}
+  .hi-hora{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:1px;}
+  .hi-right{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border-left:1px solid #1e3450;flex-shrink:0;min-width:60px;}
+  .hi-qtd{font-family:'Share Tech Mono',monospace;font-size:1.5rem;color:var(--yellow);font-weight:700;line-height:1;}
   .hi-sync{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
   .sync-ok{background:var(--green);box-shadow:0 0 5px var(--green);}
   .sync-err{background:var(--red);box-shadow:0 0 5px var(--red);}
@@ -114,6 +90,9 @@
   .btn-del{width:28px;height:28px;border-radius:6px;border:1px solid rgba(255,61,87,.4);background:transparent;color:var(--red);font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .btn-del:active{background:rgba(255,61,87,.2);}
   .empty-msg{text-align:center;color:var(--muted);font-size:.8rem;padding:20px;letter-spacing:1px;}
+
+  /* TAG PALLET no histórico */
+  .hi-pallet-tag{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--orange);letter-spacing:1px;margin-top:4px;}
 
   footer{flex-shrink:0;padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;position:sticky;bottom:0;background:var(--bg);z-index:100;}
   .btn-f{flex:1;padding:13px;border-radius:8px;background:transparent;font-family:'Rajdhani',sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;transition:background .15s;touch-action:manipulation;}
@@ -133,6 +112,20 @@ function somBipe(){
     g.gain.setValueAtTime(0.3,ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.15);
     o.start(ctx.currentTime);o.stop(ctx.currentTime+0.15);
+  }catch(e){}
+}
+function somPallet(){
+  // 3 bipes rápidos para pallet
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [0,0.18,0.36].forEach(t=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.type='sine';o.frequency.setValueAtTime(1400,ctx.currentTime+t);
+      g.gain.setValueAtTime(0.3,ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.12);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.12);
+    });
   }catch(e){}
 }
 function somErro(){
@@ -158,7 +151,10 @@ function somErro(){
   <header>
     <div class="hdr-top">
       <div class="brand">BIPE <span>TECLIGTH</span></div>
-      <span class="badge-v">v6.2</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span id="modoBadge" class="modo-normal">NORMAL</span>
+        <span class="badge-v">v7.0</span>
+      </div>
     </div>
     <div class="conn-row">
       <div id="connDot" style="background:#00e676;box-shadow:0 0 8px #00e676;"></div>
@@ -169,15 +165,24 @@ function somErro(){
 
   <div class="body">
 
-    <input id="codeInput" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false">
+    <input id="codeInput" type="text" inputmode="none" autocomplete="off" autocorrect="off" spellcheck="false">
 
     <div class="card">
       <div class="card-label">▸ Leitura — BIPE TECLIGTH</div>
-      <div class="scan-status">
-        <div class="scan-pulse"></div>
-        AGUARDANDO BIPE...
+      <div class="scan-status" id="scanStatus">
+        <div class="scan-pulse" id="scanPulse"></div>
+        <span id="scanTxt">AGUARDANDO BIPE...</span>
       </div>
       <div id="feedback"></div>
+    </div>
+
+    <!-- CARD PALLET - aparece quando lê QR gigante -->
+    <div class="card" id="cardPallet">
+      <div class="pallet-header">
+        <div class="pallet-title">📦 PALLET LIDO</div>
+        <div class="pallet-count" id="palletCount"></div>
+      </div>
+      <div class="pallet-list" id="palletList"></div>
     </div>
 
     <div class="card" id="cardUlt">
@@ -217,9 +222,9 @@ function somErro(){
   </div>
 
   <footer>
-    <button class="btn-f btn-retry" onclick="reenviarFila()">R REENVIAR</button>
+    <button class="btn-f btn-retry" onclick="reenviarFila()">⟳ REENVIAR</button>
     <button class="btn-f" style="flex:1;padding:13px;border-radius:8px;background:transparent;border:1px solid rgba(0,200,255,.3);color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;" onclick="abrirExportar()">EXPORTAR</button>
-    <button class="btn-f btn-clear" onclick="limparEstoque()">X LIMPAR</button>
+    <button class="btn-f btn-clear" onclick="limparEstoque()">✕ LIMPAR</button>
   </footer>
 
 </div>
@@ -243,7 +248,7 @@ function somErro(){
     <textarea id="exportTexto" style="width:100%;height:200px;background:#060a0f;border:1px solid #1a2840;border-radius:6px;color:#dce8f5;font-family:monospace;font-size:.7rem;padding:8px;resize:none;"></textarea>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button onclick="copiarExport()" style="flex:1;padding:12px;border:1px solid #00c8ff;border-radius:8px;background:transparent;color:#00c8ff;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;">COPIAR</button>
-      <button onclick="fecharExportar()" style="flex:1;padding:12px;border:1px solid #ff3d57;border-radius:8px;background:transparent;color:#ff3d57;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;">X FECHAR</button>
+      <button onclick="fecharExportar()" style="flex:1;padding:12px;border:1px solid #ff3d57;border-radius:8px;background:transparent;color:#ff3d57;font-family:Rajdhani,sans-serif;font-size:.9rem;letter-spacing:2px;cursor:pointer;">✕ FECHAR</button>
     </div>
   </div>
 </div>
@@ -253,90 +258,39 @@ function somErro(){
 // CADASTRO
 // ============================================================
 const CAD = {
-  // ── CHICOTE ANTERIOR ──────────────────────────────────────
-  "521625000":"CHICOTE ANTERIOR",
-  "521625050":"CHICOTE ANTERIOR",
-  "522138770":"CHICOTE ANTERIOR",
-  "522195750":"CHICOTE ANTERIOR",
-  "522223250":"CHICOTE ANTERIOR",
-  "522242480":"CHICOTE ANTERIOR",
-  "522252800":"CHICOTE ANTERIOR",
-  "522345100":"CHICOTE ANTERIOR",
-  "522349430":"CHICOTE ANTERIOR",
-  "522349440":"CHICOTE ANTERIOR",
-  "522349450":"CHICOTE ANTERIOR",
-  "522349460":"CHICOTE ANTERIOR",
-  "522469100":"CHICOTE ANTERIOR",
-  "522469110":"CHICOTE ANTERIOR",
-  "522469120":"CHICOTE ANTERIOR",
-  "522469130":"CHICOTE ANTERIOR",
-  "522469140":"CHICOTE ANTERIOR",
-  "522469210":"CHICOTE ANTERIOR",
-  "522397640":"CHICOTE ANTERIOR",
-  "522394830":"CHICOTE ANTERIOR",
-  "522394820":"CHICOTE ANTERIOR",
-  "522682260":"CHICOTE ANTERIOR",
-  "522683690":"CHICOTE ANTERIOR",
-  "522683700":"CHICOTE ANTERIOR",
-  "522648010":"CHICOTE ANTERIOR",
-  "522682240":"CHICOTE ANTERIOR",
-  "522683720":"CHICOTE ANTERIOR",
-  "522394990":"CHICOTE ANTERIOR",
-  "522397820":"CHICOTE ANTERIOR",
-  "522469190":"CHICOTE ANTERIOR",
-  "522683710":"CHICOTE ANTERIOR",
-  "522641630":"CHICOTE ANTERIOR",
-  "522641660":"CHICOTE ANTERIOR",
-  "522641620":"CHICOTE ANTERIOR",
-  "522638760":"CHICOTE ANTERIOR",
-  "522638740":"CHICOTE ANTERIOR",
+  "521625000":"CHICOTE ANTERIOR","521625050":"CHICOTE ANTERIOR","522138770":"CHICOTE ANTERIOR",
+  "522195750":"CHICOTE ANTERIOR","522223250":"CHICOTE ANTERIOR","522242480":"CHICOTE ANTERIOR",
+  "522252800":"CHICOTE ANTERIOR","522345100":"CHICOTE ANTERIOR","522349430":"CHICOTE ANTERIOR",
+  "522349440":"CHICOTE ANTERIOR","522349450":"CHICOTE ANTERIOR","522349460":"CHICOTE ANTERIOR",
+  "522469100":"CHICOTE ANTERIOR","522469110":"CHICOTE ANTERIOR","522469120":"CHICOTE ANTERIOR",
+  "522469130":"CHICOTE ANTERIOR","522469140":"CHICOTE ANTERIOR","522469210":"CHICOTE ANTERIOR",
+  "522397640":"CHICOTE ANTERIOR","522394830":"CHICOTE ANTERIOR","522394820":"CHICOTE ANTERIOR",
+  "522682260":"CHICOTE ANTERIOR","522683690":"CHICOTE ANTERIOR","522683700":"CHICOTE ANTERIOR",
+  "522648010":"CHICOTE ANTERIOR","522682240":"CHICOTE ANTERIOR","522683720":"CHICOTE ANTERIOR",
+  "522394990":"CHICOTE ANTERIOR","522397820":"CHICOTE ANTERIOR","522469190":"CHICOTE ANTERIOR",
+  "522683710":"CHICOTE ANTERIOR","522641630":"CHICOTE ANTERIOR","522641660":"CHICOTE ANTERIOR",
+  "522641620":"CHICOTE ANTERIOR","522638760":"CHICOTE ANTERIOR","522638740":"CHICOTE ANTERIOR",
   "522682250":"CHICOTE ANTERIOR",
-  // ── CHICOTE PORTA ─────────────────────────────────────────
-  "522194520":"CHICOTE PORTA",
-  "522194530":"CHICOTE PORTA",
-  "521625540":"CHICOTE PORTA",
-  "521625550":"CHICOTE PORTA",
-  "521625560":"CHICOTE PORTA",
-  "521625590":"CHICOTE PORTA",
-  "521625600":"CHICOTE PORTA",
-  "521750510":"CHICOTE PORTA",
-  "521625610":"CHICOTE PORTA",
-  "521625640":"CHICOTE PORTA",
-  "521625650":"CHICOTE PORTA",
-  "521757070":"CHICOTE PORTA",
-  "522500910":"CHICOTE PORTA",
-  "522500900":"CHICOTE PORTA",
-  // ── PAINEL DE INSTRUMENTOS ────────────────────────────────
-  "522367320":"PAINEL DE INSTRUMENTOS",
-  "522367330":"PAINEL DE INSTRUMENTOS",
-  "522367340":"PAINEL DE INSTRUMENTOS",
-  "522367350":"PAINEL DE INSTRUMENTOS",
-  "522367360":"PAINEL DE INSTRUMENTOS",
-  "522367370":"PAINEL DE INSTRUMENTOS",
-  "522367380":"PAINEL DE INSTRUMENTOS",
-  "522367400":"PAINEL DE INSTRUMENTOS",
-  "522367410":"PAINEL DE INSTRUMENTOS",
-  "522367420":"PAINEL DE INSTRUMENTOS",
-  "522367430":"PAINEL DE INSTRUMENTOS",
-  "522367440":"PAINEL DE INSTRUMENTOS",
-  "522367450":"PAINEL DE INSTRUMENTOS",
-  "522367460":"PAINEL DE INSTRUMENTOS",
-  "522367470":"PAINEL DE INSTRUMENTOS",
-  "522367710":"PAINEL DE INSTRUMENTOS",
-  "522367720":"PAINEL DE INSTRUMENTOS",
-  "522367730":"PAINEL DE INSTRUMENTOS",
-  "522367740":"PAINEL DE INSTRUMENTOS",
-  "522367750":"PAINEL DE INSTRUMENTOS",
-  "522367760":"PAINEL DE INSTRUMENTOS",
-  "522367770":"PAINEL DE INSTRUMENTOS",
-  "522367780":"PAINEL DE INSTRUMENTOS",
-  "522555720":"PAINEL DE INSTRUMENTOS",
-  "522567680":"PAINEL DE INSTRUMENTOS",
-  "522641680":"PAINEL DE INSTRUMENTOS",
-  "522641690":"PAINEL DE INSTRUMENTOS",
-  "522641670":"PAINEL DE INSTRUMENTOS",
-  "522638770":"PAINEL DE INSTRUMENTOS",
-  "522638780":"PAINEL DE INSTRUMENTOS"
+  "522194520":"CHICOTE PORTA","522194530":"CHICOTE PORTA","521625540":"CHICOTE PORTA",
+  "521625550":"CHICOTE PORTA","521625560":"CHICOTE PORTA","521625590":"CHICOTE PORTA",
+  "521625600":"CHICOTE PORTA","521750510":"CHICOTE PORTA","521625610":"CHICOTE PORTA",
+  "521625640":"CHICOTE PORTA","521625650":"CHICOTE PORTA","521757070":"CHICOTE PORTA",
+  "522500910":"CHICOTE PORTA","522500900":"CHICOTE PORTA",
+  "522367320":"PAINEL DE INSTRUMENTOS","522367330":"PAINEL DE INSTRUMENTOS",
+  "522367340":"PAINEL DE INSTRUMENTOS","522367350":"PAINEL DE INSTRUMENTOS",
+  "522367360":"PAINEL DE INSTRUMENTOS","522367370":"PAINEL DE INSTRUMENTOS",
+  "522367380":"PAINEL DE INSTRUMENTOS","522367400":"PAINEL DE INSTRUMENTOS",
+  "522367410":"PAINEL DE INSTRUMENTOS","522367420":"PAINEL DE INSTRUMENTOS",
+  "522367430":"PAINEL DE INSTRUMENTOS","522367440":"PAINEL DE INSTRUMENTOS",
+  "522367450":"PAINEL DE INSTRUMENTOS","522367460":"PAINEL DE INSTRUMENTOS",
+  "522367470":"PAINEL DE INSTRUMENTOS","522367710":"PAINEL DE INSTRUMENTOS",
+  "522367720":"PAINEL DE INSTRUMENTOS","522367730":"PAINEL DE INSTRUMENTOS",
+  "522367740":"PAINEL DE INSTRUMENTOS","522367750":"PAINEL DE INSTRUMENTOS",
+  "522367760":"PAINEL DE INSTRUMENTOS","522367770":"PAINEL DE INSTRUMENTOS",
+  "522367780":"PAINEL DE INSTRUMENTOS","522555720":"PAINEL DE INSTRUMENTOS",
+  "522567680":"PAINEL DE INSTRUMENTOS","522641680":"PAINEL DE INSTRUMENTOS",
+  "522641690":"PAINEL DE INSTRUMENTOS","522641670":"PAINEL DE INSTRUMENTOS",
+  "522638770":"PAINEL DE INSTRUMENTOS","522638780":"PAINEL DE INSTRUMENTOS"
 };
 
 // ============================================================
@@ -344,15 +298,51 @@ const CAD = {
 // ============================================================
 let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
 let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
-const scriptUrl = 'https://script.google.com/macros/s/AKfycbw-27-2YF8xD6PVJ2783y9fcBh1yQnmyRb9EdhFFnn345AKARMJB22rRlrPgFoVH7rr/exec';
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbw1ClQQyUO3fUKpufjuPuiSTierw2seFKP8-RuG0C6wvgSq39CRnv-oMmng5Lt5VE5e/exec';
 let feedTimer;
 
-function nomeCod(c){ return CAD[c]||'NÃO CADASTRADO'; }
+function nomeCod(c){ return CAD[c]||null; }
+
+// ============================================================
+// DETECTOR DE QR PALLET STELLANTIS
+// Estrutura por bloco de 42 chars:
+// [NF Desenho 9][NF Embalagem 9][Desenho 11][Qtd Total 5][Embalagem 4][QtdEmb 4]
+// ============================================================
+function detectarPallet(raw){
+  // Só tenta se string >= 84 chars (mínimo 2 blocos) e só dígitos
+  if(raw.length < 42 || !/^\d+$/.test(raw)) return null;
+
+  const itens = [];
+  let pos = 0;
+
+  while(pos + 42 <= raw.length){
+    const nfDesenho  = raw.substring(pos, pos+9);
+    const nfEmb      = raw.substring(pos+9, pos+18);
+    const desenhoRaw = raw.substring(pos+18, pos+29);
+    const qtdRaw     = raw.substring(pos+29, pos+34);
+    // embalagem 4 + qtdEmb 4 = 8 chars restantes do bloco
+
+    const qtd = parseInt(qtdRaw, 10);
+    // Remove zeros à esquerda do desenho
+    const codigo = String(parseInt(desenhoRaw, 10));
+
+    if(codigo && qtd >= 0){
+      itens.push({ codigo, qtd });
+    }
+    pos += 42;
+  }
+
+  // Só considera pallet se extraiu pelo menos 1 item E o raw tem múltiplos de 42 chars
+  // OU se o código tem mais de 11 dígitos (claramente não é um código simples)
+  if(itens.length > 0 && raw.length > 11){
+    return itens;
+  }
+  return null;
+}
 
 // ============================================================
 // INIT
 // ============================================================
-// ✅ v6.2: recarrega dados do localStorage ao voltar do segundo plano
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'){
     try{const eStr=localStorage.getItem('btE');const fStr=localStorage.getItem('btF');if(eStr)estoque=JSON.parse(eStr);if(fStr)fila=JSON.parse(fStr);}catch(e){}
@@ -383,9 +373,9 @@ document.addEventListener('click', ()=>{ focarInput(); },{passive:true});
 document.getElementById('codeInput').addEventListener('keydown', e=>{
   if(e.key==='Enter'){
     e.preventDefault();
-    const raw=document.getElementById('codeInput').value.trim().replace(/\D/g,'');
+    const raw=document.getElementById('codeInput').value.trim().replace(/\s/g,'');
     document.getElementById('codeInput').value='';
-    if(raw) registrar(raw);
+    if(raw) processarLeitura(raw);
   }
 });
 
@@ -395,13 +385,100 @@ document.addEventListener('keydown', e=>{
 },{passive:true});
 
 // ============================================================
-// REGISTRO
+// ROTEADOR PRINCIPAL — decide se é pallet ou código simples
+// ============================================================
+function processarLeitura(raw){
+  const itensPallet = detectarPallet(raw);
+
+  if(itensPallet && itensPallet.length > 0){
+    // ── MODO PALLET ──
+    processarPallet(itensPallet);
+  } else {
+    // ── MODO NORMAL (código simples) ──
+    const cod = raw.replace(/\D/g,'');
+    if(cod) registrar(cod);
+  }
+}
+
+// ============================================================
+// MODO PALLET
+// ============================================================
+function processarPallet(itens){
+  const hora = new Date().toLocaleString('pt-BR');
+  somPallet();
+  if(navigator.vibrate) navigator.vibrate([100,50,100,50,100]);
+
+  setModo('pallet');
+
+  // Mostra card pallet
+  const cardPallet = document.getElementById('cardPallet');
+  const palletList = document.getElementById('palletList');
+  const palletCount = document.getElementById('palletCount');
+  cardPallet.style.display = 'block';
+
+  let html = '';
+  let todosNaoCad = true;
+  let itensValidos = 0;
+
+  itens.forEach(item => {
+    const nome = nomeCod(item.codigo);
+    const nCad = !nome;
+    if(!nCad) todosNaoCad = false;
+
+    html += `<div class="pallet-item${nCad?' nao-cad':''}">
+      <div class="pallet-item-left">
+        <div class="pallet-item-cod">${item.codigo}</div>
+        <div class="pallet-item-nome">${nCad ? '⚠ NÃO CADASTRADO' : nome}</div>
+      </div>
+      <div class="pallet-item-qtd">${item.qtd}x</div>
+    </div>`;
+
+    if(!nCad){
+      itensValidos++;
+      // Registra no estoque (soma se já existe)
+      if(estoque[item.codigo]){
+        estoque[item.codigo].qtd += item.qtd;
+        estoque[item.codigo].hora = hora;
+        estoque[item.codigo].pallet = true;
+      } else {
+        estoque[item.codigo] = {
+          cod: item.codigo,
+          nome: nome,
+          qtd: item.qtd,
+          hora,
+          sync: 'nd',
+          pallet: true
+        };
+      }
+      // Envia para planilha com a quantidade do pallet
+      enviar({...estoque[item.codigo], qtd: item.qtd});
+    }
+  });
+
+  palletList.innerHTML = html;
+  palletCount.textContent = `${itens.length} item(ns)`;
+
+  salvarE(); renderLista(); contadores();
+
+  if(itensValidos > 0){
+    fb('ok', `📦 PALLET: ${itensValidos} item(ns) enviado(s) com sucesso!`);
+  } else {
+    somErro();
+    fb('err', `⚠ Nenhum código do pallet está cadastrado!`);
+  }
+}
+
+// ============================================================
+// MODO NORMAL (código simples)
 // ============================================================
 function registrar(raw){
   const hora=new Date().toLocaleString('pt-BR');
   const n=nomeCod(raw);
 
-  if(n==='NÃO CADASTRADO'){
+  setModo('normal');
+  document.getElementById('cardPallet').style.display='none';
+
+  if(!n){
     somErro();
     if(navigator.vibrate) navigator.vibrate([300,100,300,100,300]);
     mostrarPopupNaoCad(raw);
@@ -412,17 +489,16 @@ function registrar(raw){
   if(estoque[raw]){
     estoque[raw].qtd++;
     estoque[raw].hora=hora;
+    estoque[raw].pallet=false;
   }else{
-    estoque[raw]={cod:raw,nome:n,qtd:1,hora,sync:'nd'};
+    estoque[raw]={cod:raw,nome:n,qtd:1,hora,sync:'nd',pallet:false};
   }
 
-  window._bipeAtivo = true;
   somBipe();
   fb('ok',raw+' — '+n+' · QTD: '+estoque[raw].qtd+' · enviando...');
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
   setConn('busy','ENVIANDO...');
 
-  // ✅ v6.2: sempre envia qtd=1 por bipe — planilha acumula somando
   enviar({...estoque[raw], qtd:1});
 }
 
@@ -430,29 +506,33 @@ function registrar(raw){
 // ENVIO PLANILHA
 // ============================================================
 async function enviar(item){
-  // ✅ CORREÇÃO: item.qtd contém a quantidade real acumulada
-  const params="cmd=bipe&codigo="+encodeURIComponent(item.cod)+"&nome="+encodeURIComponent(item.nome)+"&qtd="+encodeURIComponent(item.qtd)+"&hora="+encodeURIComponent(item.hora)+"&t="+Date.now();
+  const params="cmd=bipe&codigo="+encodeURIComponent(item.cod)
+    +"&nome="+encodeURIComponent(item.nome)
+    +"&qtd="+encodeURIComponent(item.qtd)
+    +"&hora="+encodeURIComponent(item.hora)
+    +"&t="+Date.now();
   const url=scriptUrl+"?"+params;
   try{
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),8000);
     await fetch(url,{method:"GET",mode:"no-cors",cache:"no-cache",signal:controller.signal});
     clearTimeout(timer);
-    estoque[item.cod].sync="ok"; salvarE(); renderLista();
+    if(estoque[item.cod]) estoque[item.cod].sync="ok";
+    salvarE(); renderLista();
     setConn("ok","SINCRONIZADO");
   }catch(e){
     try{
       await new Promise((resolve)=>{
         const img=new Image();
-        img.onload=resolve;
-        img.onerror=resolve;
+        img.onload=resolve; img.onerror=resolve;
         img.src=url;
         setTimeout(resolve,6000);
       });
-      estoque[item.cod].sync="ok"; salvarE(); renderLista();
+      if(estoque[item.cod]) estoque[item.cod].sync="ok";
+      salvarE(); renderLista();
       setConn("ok","SINCRONIZADO");
     }catch(e2){
-      estoque[item.cod].sync="err";
+      if(estoque[item.cod]) estoque[item.cod].sync="err";
       fila.push({...item}); localStorage.setItem("btF",JSON.stringify(fila));
       salvarE(); renderLista(); atualizarFilaUI();
       setConn("err","SEM CONEXÃO — na fila");
@@ -461,12 +541,11 @@ async function enviar(item){
 }
 
 async function reenviarFila(){
-  if(!scriptUrl||!fila.length){fb('warn','Nenhuma falha pendente.');return;}
+  if(!fila.length){fb('warn','Nenhuma falha pendente.');return;}
   setConn('busy','REENVIANDO...');
   const pend=[...fila]; fila=[]; localStorage.setItem('btF','[]'); atualizarFilaUI();
   for(const it of pend){
-  // ✅ v6.2: reenvia cada item com qtd=1 unitário
-    const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:1,hora:it.hora});
+    const p=new URLSearchParams({cmd:'bipe',codigo:it.cod,nome:it.nome,qtd:it.qtd,hora:it.hora});
     try{ await fetch(scriptUrl+'?'+p,{method:'GET',mode:'no-cors'}); await new Promise(r=>setTimeout(r,250)); }
     catch(e){ fila.push(it); }
   }
@@ -482,6 +561,21 @@ function atualizarFilaUI(){
 // ============================================================
 // UI
 // ============================================================
+function setModo(modo){
+  const badge = document.getElementById('modoBadge');
+  const pulse = document.getElementById('scanPulse');
+  const txt   = document.getElementById('scanTxt');
+  if(modo==='pallet'){
+    badge.className='modo-pallet'; badge.textContent='PALLET';
+    pulse.className='scan-pulse orange';
+    txt.textContent='PALLET STELLANTIS DETECTADO';
+  } else {
+    badge.className='modo-normal'; badge.textContent='NORMAL';
+    pulse.className='scan-pulse';
+    txt.textContent='AGUARDANDO BIPE...';
+  }
+}
+
 function setConn(s,t){
   const c={ok:'#00e676',err:'#ff3d57',busy:'#ffd600',off:'#3d5470'};
   const d=document.getElementById('connDot');
@@ -501,7 +595,6 @@ function mostrarUlt(cod){
 }
 
 function renderLista(){
-  // ✅ v6.2: sempre recarrega do localStorage antes de renderizar
   try{
     const eStr=localStorage.getItem('btE');
     if(eStr){ const parsed=JSON.parse(eStr); if(Object.keys(parsed).length>0) estoque=parsed; }
@@ -513,12 +606,13 @@ function renderLista(){
   if(!its.length){list.innerHTML='<div class="empty-msg">Nenhuma leitura ainda.</div>';return;}
   list.innerHTML=its.map(h=>`
     <div class="hist-item">
-      <div class="hi-barra"></div>
+      <div class="hi-barra${h.pallet?' orange':''}"></div>
       <div class="hi-left">
         <div class="hi-nome">${h.nome}</div>
         <div class="hi-divisor"></div>
         <div class="hi-cod">${h.cod}</div>
         <div class="hi-hora">${h.hora}</div>
+        ${h.pallet?'<div class="hi-pallet-tag">📦 PALLET</div>':''}
       </div>
       <div class="hi-right">
         <div class="hi-qtd">${h.qtd}x</div>
@@ -536,9 +630,10 @@ function del(cod){
 
 function contadores(){
   const its=Object.values(estoque);
+  const total=its.reduce((a,h)=>a+h.qtd,0);
   document.getElementById('cB').textContent=its.reduce((a,h)=>a+h.qtd,0);
   document.getElementById('cU').textContent=its.length;
-  document.getElementById('cT').textContent=its.reduce((a,h)=>a+h.qtd,0);
+  document.getElementById('cT').textContent=total;
 }
 
 function limparEstoque(){
@@ -548,6 +643,8 @@ function limparEstoque(){
   localStorage.removeItem('btE'); localStorage.removeItem('btF');
   renderLista(); contadores(); atualizarFilaUI();
   document.getElementById('cardUlt').style.display='none';
+  document.getElementById('cardPallet').style.display='none';
+  setModo('normal');
   fb('ok','Limpado com sucesso!');
 }
 
@@ -563,8 +660,8 @@ function fecharPopupNaoCad(){
 function abrirExportar(){
   const its=Object.values(estoque);
   if(!its.length){fb('warn','Nenhum item para exportar.');return;}
-  let texto='CÓDIGO\tCHICOTE\tQTD\tÚLT. LEITURA\n';
-  its.forEach(h=>{texto+=h.cod+'\t'+h.nome+'\t'+h.qtd+'\t'+h.hora+'\n';});
+  let texto='CÓDIGO\tCHICOTE\tQTD\tTIPO\tÚLT. LEITURA\n';
+  its.forEach(h=>{texto+=h.cod+'\t'+h.nome+'\t'+h.qtd+'\t'+(h.pallet?'PALLET':'NORMAL')+'\t'+h.hora+'\n';});
   document.getElementById('exportTexto').value=texto;
   document.getElementById('popupExportar').style.display='flex';
 }
@@ -586,7 +683,7 @@ function fb(type,msg){
   const el=document.getElementById('feedback');
   el.className=type; el.textContent=msg;
   clearTimeout(feedTimer);
-  feedTimer=setTimeout(()=>{el.className='';el.textContent='';},4000);
+  feedTimer=setTimeout(()=>{el.className='';el.textContent='';},5000);
 }
 </script>
 </body>
