@@ -64,6 +64,9 @@
   .pallet-item-qtd{font-family:'Share Tech Mono',monospace;font-size:1.3rem;color:var(--orange);font-weight:700;}
   .pallet-item.nao-cad{background:rgba(255,61,87,.06);border-color:rgba(255,61,87,.25);}
   .pallet-item.nao-cad .pallet-item-nome{color:var(--red);}
+  .pallet-item.dup{background:rgba(255,214,0,.06);border-color:rgba(255,214,0,.3);}
+  .pallet-item.dup .pallet-item-cod{color:var(--yellow);}
+  .pallet-item.nao-cad .pallet-item-nome{color:var(--red);}
 
   .counters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .cnt-box{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:11px 8px;text-align:center;}
@@ -153,7 +156,7 @@ function somErro(){
       <div class="brand">BIPE <span>TECLIGTH</span></div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span id="modoBadge" class="modo-normal">NORMAL</span>
-        <span class="badge-v">v7.1</span>
+        <span class="badge-v">v7.2</span>
       </div>
     </div>
     <div class="conn-row">
@@ -240,6 +243,18 @@ function somErro(){
   </div>
 </div>
 
+
+<!-- POPUP DUPLICADO -->
+<div id="popupDuplicado" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#0a1a0a;border:2px solid #ffd600;border-radius:14px;padding:28px 22px;max-width:340px;width:100%;text-align:center;">
+    <div style="font-size:2.4rem;margin-bottom:10px;">🔁</div>
+    <div style="font-size:1.1rem;font-weight:700;letter-spacing:2px;color:#ffd600;margin-bottom:8px;">PALLET DUPLICADO!</div>
+    <div id="popupDupCod" style="font-family:monospace;font-size:.85rem;color:#00c8ff;letter-spacing:2px;margin-bottom:6px;"></div>
+    <div id="popupDupNome" style="font-family:Rajdhani,sans-serif;font-size:.9rem;color:#dce8f5;margin-bottom:14px;"></div>
+    <div style="font-size:.78rem;color:#3d5470;margin-bottom:18px;">Este QR Code já foi bipado anteriormente.<br>A quantidade foi <strong style="color:#ffd600;">somada</strong> mesmo assim.</div>
+    <button onclick="fecharPopupDup()" style="width:100%;padding:14px;border:none;border-radius:8px;background:#ffd600;color:#000;font-family:Rajdhani,sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;cursor:pointer;">OK ENTENDIDO</button>
+  </div>
+</div>
 <!-- POPUP EXPORTAR -->
 <div id="popupExportar" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;">
   <div style="background:#0d1520;border:2px solid #00c8ff;border-radius:14px;padding:24px 20px;max-width:360px;width:100%;">
@@ -298,7 +313,7 @@ const CAD = {
 // ============================================================
 let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
 let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
-const scriptUrl = 'https://script.google.com/macros/s/AKfycbw1ClQQyUO3fUKpufjuPuiSTierw2seFKP8-RuG0C6wvgSq39CRnv-oMmng5Lt5VE5e/exec';
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbzYk_SUtd4E2s-_yTG6ZAicU8avWEPH9YCQ1hoB640fVCS4jLoW74_jfSbBrjtjp9J0/exec';
 let feedTimer;
 
 function nomeCod(c){ return CAD[c]||null; }
@@ -413,15 +428,17 @@ function processarPallet(itens){
   let html = '';
   let todosNaoCad = true;
   let itensValidos = 0;
+  let itensDuplicados = [];
 
   itens.forEach(item => {
     const nome = nomeCod(item.codigo);
     const nCad = !nome;
     if(!nCad) todosNaoCad = false;
+    const isDup = !nCad && !!estoque[item.codigo];
 
-    html += `<div class="pallet-item${nCad?' nao-cad':''}">
+    html += `<div class="pallet-item${nCad?' nao-cad':isDup?' dup':''}">
       <div class="pallet-item-left">
-        <div class="pallet-item-cod">${item.codigo}</div>
+        <div class="pallet-item-cod">${item.codigo}${isDup?' 🔁':''}</div>
         <div class="pallet-item-nome">${nCad ? '⚠ NÃO CADASTRADO' : nome}</div>
       </div>
       <div class="pallet-item-qtd">${item.qtd}x</div>
@@ -429,8 +446,9 @@ function processarPallet(itens){
 
     if(!nCad){
       itensValidos++;
-      // Registra no estoque (soma se já existe)
       if(estoque[item.codigo]){
+        // Duplicado — soma mesmo assim
+        itensDuplicados.push({codigo: item.codigo, nome: nome, qtd: item.qtd});
         estoque[item.codigo].qtd += item.qtd;
         estoque[item.codigo].hora = hora;
         estoque[item.codigo].pallet = true;
@@ -444,7 +462,6 @@ function processarPallet(itens){
           pallet: true
         };
       }
-      // Envia para planilha com a quantidade do pallet
       enviar({...estoque[item.codigo], qtd: item.qtd});
     }
   });
@@ -456,6 +473,9 @@ function processarPallet(itens){
 
   if(itensValidos > 0){
     fb('ok', `📦 PALLET: ${itensValidos} item(ns) enviado(s) com sucesso!`);
+    if(itensDuplicados.length > 0){
+      setTimeout(()=>mostrarPopupDup(itensDuplicados), 600);
+    }
   } else {
     somErro();
     fb('err', `⚠ Nenhum código do pallet está cadastrado!`);
@@ -646,6 +666,18 @@ function mostrarPopupNaoCad(cod){
   document.getElementById('popupNaoCadCod').textContent=cod;
   document.getElementById('popupNaoCad').style.display='flex';
 }
+function mostrarPopupDup(itens){
+  // Monta lista de itens duplicados
+  var nomes = itens.map(function(it){ return it.codigo + ' — ' + it.nome + ' (+' + it.qtd + 'x)'; });
+  document.getElementById('popupDupCod').textContent = itens.length + ' item(ns) já existiam';
+  document.getElementById('popupDupNome').textContent = nomes.join(' | ');
+  document.getElementById('popupDuplicado').style.display='flex';
+}
+function fecharPopupDup(){
+  document.getElementById('popupDuplicado').style.display='none';
+  focarInput();
+}
+
 function fecharPopupNaoCad(){
   document.getElementById('popupNaoCad').style.display='none';
   focarInput();
