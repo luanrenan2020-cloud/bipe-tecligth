@@ -156,7 +156,7 @@ function somErro(){
       <div class="brand">BIPE <span>TECLIGTH</span></div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span id="modoBadge" class="modo-normal">NORMAL</span>
-        <span class="badge-v">v7.5</span>
+        <span class="badge-v">v7.7</span>
       </div>
     </div>
     <div class="conn-row">
@@ -313,7 +313,7 @@ const CAD = {
 // ============================================================
 let estoque   = JSON.parse(localStorage.getItem('btE')||'{}');
 let fila      = JSON.parse(localStorage.getItem('btF')||'[]');
-const scriptUrl = 'https://script.google.com/macros/s/AKfycbwbQVC_f24sUsA0FKyPzY2xYdJpl3UpsFbapPQ2m9zmLqEw2rQ59D0mJqaZiEzdtO86/exec';
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbz4-_tO_RdiLq4bVNjRtm4pNxaIAyTH3JTfXjBXvA3YiZPwe6aJ8C1EsnK1Q_qqcuvc/exec';
 let feedTimer;
 
 function nomeCod(c){ return CAD[c]||null; }
@@ -447,7 +447,6 @@ function processarPallet(itens){
     if(!nCad){
       itensValidos++;
       if(estoque[item.codigo]){
-        // Duplicado — soma mesmo assim
         itensDuplicados.push({codigo: item.codigo, nome: nome, qtd: item.qtd});
         estoque[item.codigo].qtd += item.qtd;
         estoque[item.codigo].hora = hora;
@@ -462,7 +461,6 @@ function processarPallet(itens){
           pallet: true
         };
       }
-      enviar({...estoque[item.codigo], qtd: item.qtd});
     }
   });
 
@@ -471,11 +469,26 @@ function processarPallet(itens){
 
   salvarE(); renderLista(); contadores();
 
+  // Envia sequencialmente com delay para garantir que todos chegam na planilha
   if(itensValidos > 0){
-    fb('ok', `📦 PALLET: ${itensValidos} item(ns) enviado(s) com sucesso!`);
-    if(itensDuplicados.length > 0){
-      setTimeout(()=>mostrarPopupDup(itensDuplicados), 600);
-    }
+    fb('busy', `📦 Enviando ${itensValidos} item(ns)...`);
+    
+    const itensParaEnviar = itens.filter(item => nomeCod(item.codigo));
+    
+    (async () => {
+      for(let i = 0; i < itensParaEnviar.length; i++){
+        const item = itensParaEnviar[i];
+        const itemEstoque = estoque[item.codigo];
+        if(itemEstoque){
+          await enviar({...itemEstoque, qtd: item.qtd});
+          await new Promise(r => setTimeout(r, 500)); // delay 500ms entre cada envio
+        }
+      }
+      fb('ok', `📦 PALLET: ${itensValidos} item(ns) enviado(s) com sucesso!`);
+      if(itensDuplicados.length > 0){
+        setTimeout(()=>mostrarPopupDup(itensDuplicados), 600);
+      }
+    })();
   } else {
     somErro();
     fb('err', `⚠ Nenhum código do pallet está cadastrado!`);
