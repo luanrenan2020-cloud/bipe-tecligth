@@ -156,7 +156,7 @@ function somErro(){
       <div class="brand">BIPE <span>TECLIGTH</span></div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span id="modoBadge" class="modo-normal">NORMAL</span>
-        <span class="badge-v">v7.7</span>
+        <span class="badge-v">v7.8</span>
       </div>
     </div>
     <div class="conn-row">
@@ -445,13 +445,12 @@ function processarPallet(itens){
     </div>`;
 
     if(!nCad){
-      itensValidos++;
       if(estoque[item.codigo]){
+        // DUPLICADO — só avisa, NÃO lança
         itensDuplicados.push({codigo: item.codigo, nome: nome, qtd: item.qtd});
-        estoque[item.codigo].qtd += item.qtd;
-        estoque[item.codigo].hora = hora;
-        estoque[item.codigo].pallet = true;
       } else {
+        // Novo — lança normalmente
+        itensValidos++;
         estoque[item.codigo] = {
           cod: item.codigo,
           nome: nome,
@@ -513,16 +512,19 @@ function registrar(raw){
     return;
   }
 
+  // DUPLICADO — bloqueia envio e avisa
   if(estoque[raw]){
-    estoque[raw].qtd++;
-    estoque[raw].hora=hora;
-    estoque[raw].pallet=false;
-  }else{
-    estoque[raw]={cod:raw,nome:n,qtd:1,hora,sync:'nd',pallet:false};
+    somErro();
+    if(navigator.vibrate) navigator.vibrate([200,100,200]);
+    mostrarPopupDup([{codigo:raw, nome:n, qtd:estoque[raw].qtd}]);
+    fb('warn','🔁 DUPLICADO: '+raw+' — não lançado!');
+    return;
   }
 
+  estoque[raw]={cod:raw,nome:n,qtd:1,hora,sync:'nd',pallet:false};
+
   somBipe();
-  fb('ok',raw+' — '+n+' · QTD: '+estoque[raw].qtd+' · enviando...');
+  fb('ok',raw+' — '+n+' · QTD: 1 · enviando...');
   salvarE(); renderLista(); contadores(); mostrarUlt(raw);
   setConn('busy','ENVIANDO...');
 
