@@ -156,7 +156,7 @@ function somErro(){
       <div class="brand">BIPE <span>TECLIGTH</span></div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span id="modoBadge" class="modo-normal">NORMAL</span>
-        <span class="badge-v">v8.0</span>
+        <span class="badge-v">v8.1</span>
       </div>
     </div>
     <div class="conn-row">
@@ -490,7 +490,6 @@ function processarPallet(itens){
         const itemEstoque = estoque[item.codigo];
         if(itemEstoque){
           await enviar({...itemEstoque, qtd: item.qtd});
-          await new Promise(r => setTimeout(r, 150)); // delay reduzido entre cada envio
         }
       }
       fb('ok', `📦 PALLET: ${itensValidos} item(ns) enviado(s) com sucesso!`);
