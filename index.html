@@ -156,7 +156,7 @@ function somErro(){
       <div class="brand">BIPE <span>TECLIGTH</span></div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span id="modoBadge" class="modo-normal">NORMAL</span>
-        <span class="badge-v">v7.9</span>
+        <span class="badge-v">v8.0</span>
       </div>
     </div>
     <div class="conn-row">
@@ -246,15 +246,23 @@ function somErro(){
 
 
 <!-- POPUP DUPLICADO -->
-<div id="popupDuplicado" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:24px;">
-  <div style="background:#1a1500;border:2px solid #ffd600;border-radius:16px;padding:32px 24px;max-width:340px;width:100%;text-align:center;">
-    <div style="font-size:3rem;margin-bottom:12px;">🔁</div>
-    <div style="font-size:1.2rem;font-weight:700;letter-spacing:2px;color:#ffd600;margin-bottom:6px;">QR CODE DUPLICADO!</div>
-    <div style="height:1px;background:rgba(255,214,0,.3);margin:12px 0;"></div>
-    <div id="popupDupCod" style="font-family:monospace;font-size:.95rem;color:#00c8ff;letter-spacing:2px;margin-bottom:6px;"></div>
-    <div id="popupDupNome" style="font-family:Rajdhani,sans-serif;font-size:.95rem;color:#dce8f5;margin-bottom:14px;"></div>
-    <div style="font-size:.78rem;color:#3d5470;margin-bottom:20px;">Este QR Code já foi bipado anteriormente.<br>O bipe <strong style='color:#ffd600;'>NÃO foi lançado</strong> novamente.</div>
-    <button onclick="fecharPopupDup()" style="width:100%;padding:14px;border:none;border-radius:8px;background:#ffd600;color:#000;font-family:Rajdhani,sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;cursor:pointer;">✕ FECHAR</button>
+<div id="popupDuplicado" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.7);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#fff;border-radius:14px;max-width:360px;width:100%;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.5);">
+    <div style="background:#2c3e50;padding:10px 14px;display:flex;gap:6px;">
+      <span style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+      <span style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;display:inline-block;"></span>
+      <span style="width:10px;height:10px;border-radius:50%;background:#28c940;display:inline-block;"></span>
+    </div>
+    <div style="padding:28px 24px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;">
+        <div style="width:54px;height:54px;flex-shrink:0;background:#ff5252;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;">⚠</div>
+        <div style="font-family:Rajdhani,sans-serif;font-size:1.3rem;font-weight:700;color:#2c3e50;">QR Code Duplicado!</div>
+      </div>
+      <div id="popupDupCod" style="font-family:'Share Tech Mono',monospace;font-size:.95rem;color:#0a7ea4;letter-spacing:1px;margin-bottom:4px;"></div>
+      <div id="popupDupNome" style="font-family:Rajdhani,sans-serif;font-size:.9rem;color:#555;margin-bottom:14px;"></div>
+      <div style="font-size:.8rem;color:#888;margin-bottom:22px;line-height:1.4;">Este QR Code já foi bipado anteriormente. O bipe <strong style="color:#ff5252;">NÃO foi lançado</strong> novamente na planilha.</div>
+      <button onclick="fecharPopupDup()" style="width:100%;padding:13px;border:none;border-radius:24px;background:#ff5252;color:#fff;font-family:Rajdhani,sans-serif;font-size:1rem;font-weight:700;letter-spacing:1px;cursor:pointer;">OK, ENTENDI</button>
+    </div>
   </div>
 </div>
 <!-- POPUP EXPORTAR -->
@@ -482,12 +490,12 @@ function processarPallet(itens){
         const itemEstoque = estoque[item.codigo];
         if(itemEstoque){
           await enviar({...itemEstoque, qtd: item.qtd});
-          await new Promise(r => setTimeout(r, 500)); // delay 500ms entre cada envio
+          await new Promise(r => setTimeout(r, 150)); // delay reduzido entre cada envio
         }
       }
       fb('ok', `📦 PALLET: ${itensValidos} item(ns) enviado(s) com sucesso!`);
       if(itensDuplicados.length > 0){
-        setTimeout(()=>mostrarPopupDup(itensDuplicados), 600);
+        setTimeout(()=>mostrarPopupDup(itensDuplicados), 200);
       }
     })();
   } else {
